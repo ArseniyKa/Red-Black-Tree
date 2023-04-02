@@ -39,7 +39,7 @@ public:
 
   std::int64_t size() const { return size_; }
 
-  M find(T key) {
+  Node<T, M> *&find(T key) {
     if (root_ == nullptr) {
       throw std::runtime_error("the tree is empty");
     }
@@ -49,9 +49,21 @@ public:
     } else if (key > root_->key_) {
       return SubFind(key, root_->right_);
     } else if (key == root_->key_) {
-      return root_->value_;
+      return root_;
     } else {
       throw std::runtime_error("undefined behavior in find()");
+    }
+  }
+
+  void remove(T key) {
+    auto *node = find(key);
+    auto *parent = node->parent_;
+    if (node->left_ == nullptr && node->right_ == nullptr) {
+      AllLeavesEmptyCase(node);
+    } else if (node->right_ == nullptr) {
+      RightLeafEmptyCase(node);
+    } else {
+      throw std::runtime_error("undefined behavior in remove()");
     }
   }
 
@@ -69,7 +81,7 @@ private:
     }
   }
 
-  M SubFind(T key, Node<T, M> *node) {
+  Node<T, M> *&SubFind(T key, Node<T, M> *node) {
     if (node == nullptr) {
       throw std::runtime_error("the node is nullptr");
     }
@@ -79,7 +91,7 @@ private:
     } else if (key > node->key_) {
       return SubFind(key, node->right_);
     } else if (key == node->key_) {
-      return node->value_;
+      return node;
     } else {
       throw std::runtime_error("undefined behavior in SubFind()");
     }
@@ -93,6 +105,33 @@ private:
     size_++;
   }
 
+  void NullParentLeaf(T key, Node<T, M> *parent) {
+    if (parent->left_ != nullptr && key == parent->left_->key_) {
+      parent->left_ == nullptr;
+    } else if (parent->right_ != nullptr && key == parent->right_->key_) {
+      parent->right_ == nullptr;
+    } else {
+      throw std::runtime_error("NullChildPointer error");
+    }
+  }
+
+  void AllLeavesEmptyCase(Node<T, M> *&node) {
+    auto key = node->key_;
+    auto *parent = node->parent_;
+    NullParentLeaf(key, parent);
+    delete node;
+    size_--;
+  }
+
+  void RightLeafEmptyCase(Node<T, M> *&node) {
+    auto *parent = node->parent_;
+    auto *left_child = node->left_;
+    parent->left_ = left_child;
+    left_child->parent_ = parent;
+    delete node;
+    size_--;
+  }
+
   std::int64_t size_{0};
   Node<T, M> *root_{nullptr};
 };
@@ -102,9 +141,14 @@ int main(int argc, char *argv[]) {
   tree.insert(20, 'd');
   tree.insert(30, 'e');
   tree.insert(7, 'l');
-  tree.insert(15, 'a');
+  tree.insert(6, 'a');
+  tree.insert(5, 'w');
   qDebug() << "tree size" << tree.size();
-  auto ans = tree.find(15);
-  qDebug() << ans;
+  auto ans = tree.find(7);
+  qDebug() << ans->value_;
+  tree.remove(7);
+  //  tree.remove(6);
+  ans = tree.find(6);
+
   return 0;
 }
