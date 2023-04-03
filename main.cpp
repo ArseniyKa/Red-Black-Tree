@@ -62,6 +62,8 @@ public:
       AllLeavesEmptyCase(node);
     } else if (node->right_ == nullptr) {
       RightLeafEmptyCase(node);
+    } else if (node->right_ != nullptr) {
+      RightChildCase(node);
     } else {
       throw std::runtime_error("undefined behavior in remove()");
     }
@@ -126,8 +128,44 @@ private:
   void RightLeafEmptyCase(Node<T, M> *&node) {
     auto *parent = node->parent_;
     auto *left_child = node->left_;
-    parent->left_ = left_child;
+
+    auto parent_key = parent->key_;
+    auto key = node->key_;
+    if (key < parent_key) {
+      parent->left_ = left_child;
+    } else {
+      parent->right_ = left_child;
+    }
+
     left_child->parent_ = parent;
+    delete node;
+    size_--;
+  }
+
+  void RightChildCase(Node<T, M> *&node) {
+    auto *parent = node->parent_;
+    auto parent_key = parent->key_;
+    auto key = node->key_;
+    auto *right_child = node->right_;
+
+    auto *right_grandson = right_child->right_;
+    auto *left_grandson = right_child->left_;
+
+    if (left_grandson == nullptr) {
+
+      if (key < parent_key) {
+        parent->left_ = right_child;
+      } else {
+        parent->right_ = right_child;
+      }
+
+      right_child->parent_ = parent;
+
+      auto *left_child = node->left_;
+      right_child->left_ = left_child;
+      left_child->parent_ = right_child;
+    }
+
     delete node;
     size_--;
   }
@@ -143,12 +181,15 @@ int main(int argc, char *argv[]) {
   tree.insert(7, 'l');
   tree.insert(6, 'a');
   tree.insert(5, 'w');
+  tree.insert(4, 's');
+  tree.insert(3, 'z');
+  tree.insert(8, 'f');
   qDebug() << "tree size" << tree.size();
   auto ans = tree.find(7);
   qDebug() << ans->value_;
   tree.remove(7);
-  //  tree.remove(6);
-  ans = tree.find(6);
+  tree.remove(6);
+  ans = tree.find(3);
 
   return 0;
 }
