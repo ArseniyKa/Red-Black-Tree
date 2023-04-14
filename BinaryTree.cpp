@@ -2,6 +2,9 @@
 
 template <typename T, typename M> BinaryTree<T, M>::BinaryTree() {
   qDebug() << "constructor was called";
+  end_node_ = new Node<T, M>;
+  end_node_->key_ = 888;
+  end_node_->value_ = '.';
 }
 
 template <typename T, typename M> BinaryTree<T, M>::~BinaryTree() {
@@ -231,6 +234,18 @@ Node<T, M> *&BinaryTree<T, M>::FindMinimalSubTreeChild(Node<T, M> *&node) {
 }
 
 template <typename T, typename M>
+Node<T, M> *BinaryTree<T, M>::FindLastTreeNode(Node<T, M> *node) {
+  if (node == nullptr) {
+    throw std::runtime_error("FindLastTreeNode() error");
+  }
+  if (node->right_ != nullptr) {
+    return FindLastTreeNode(node->right_);
+  } else {
+    return node;
+  }
+}
+
+template <typename T, typename M>
 void BinaryTree<T, M>::SubTranverse(Node<T, M> *node) {
   if (node == nullptr) {
     return;
@@ -241,4 +256,21 @@ void BinaryTree<T, M>::SubTranverse(Node<T, M> *node) {
   SubTranverse(node->right_);
 }
 
+template <typename T, typename M>
+BinaryTreeIterator<T, M, BinaryTree<T, M>> BinaryTree<T, M>::begin() {
+  auto *first_node = FindMinimalSubTreeChild(root_);
+  BinaryTreeIterator<T, M, BinaryTree<T, M>> iter(this, first_node);
+  return iter;
+}
+
+template <typename T, typename M>
+BinaryTreeIterator<T, M, BinaryTree<T, M>> BinaryTree<T, M>::end() {
+
+  auto *last_node = FindLastTreeNode(root_);
+  last_node->right_ = end_node_;
+  BinaryTreeIterator<T, M, BinaryTree<T, M>> iter(this, end_node_);
+  return iter;
+}
+
+// explicit instantiation
 template class BinaryTree<int, char>;
