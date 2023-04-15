@@ -79,6 +79,7 @@ template <typename T, typename M> void BinaryTree<T, M>::traverse() {
 template <typename T, typename M>
 void BinaryTree<T, M>::SubInsert(T key, M value, Node<T, M> *&node,
                                  Node<T, M> *parent) {
+  // место где добавляется новый узел
   if (node == nullptr) {
     InitNode(key, value, node, parent);
     return;
@@ -102,6 +103,7 @@ Node<T, M> *&BinaryTree<T, M>::SubFind(T key, Node<T, M> *node) {
   } else if (key > node->key_) {
     return SubFind(key, node->right_);
   } else if (key == node->key_) {
+    // место где присваивается узел
     return node;
   } else {
     throw std::runtime_error("undefined behavior in SubFind()");
