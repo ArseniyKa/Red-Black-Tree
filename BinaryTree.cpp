@@ -2,9 +2,6 @@
 
 template <typename T, typename M> BinaryTree<T, M>::BinaryTree() {
   qDebug() << "constructor was called";
-  end_node_ = new Node<T, M>;
-  end_node_->key_ = 888;
-  end_node_->value_ = '.';
 }
 
 template <typename T, typename M> BinaryTree<T, M>::~BinaryTree() {
@@ -267,9 +264,14 @@ BinaryTreeIterator<T, M, BinaryTree<T, M>> BinaryTree<T, M>::begin() {
 
 template <typename T, typename M>
 BinaryTreeIterator<T, M, BinaryTree<T, M>> BinaryTree<T, M>::end() {
+  if (end_node_ == nullptr) {
+    end_node_ = new Node<T, M>;
+    end_node_->key_ = 888;
+    end_node_->value_ = '.';
+    auto *last_node = FindLastTreeNode(root_);
+    last_node->right_ = end_node_;
+  }
 
-  auto *last_node = FindLastTreeNode(root_);
-  last_node->right_ = end_node_;
   BinaryTreeIterator<T, M, BinaryTree<T, M>> iter(this, end_node_);
   return iter;
 }

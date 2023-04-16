@@ -20,10 +20,11 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core)
 
+# for google tests
 enable_testing()
 add_subdirectory(submodules/googletest)
 add_subdirectory(tests)
-#add_executable(test_app test_main.cpp)
+###################################
 
 add_executable(RBTree
   main.cpp
@@ -36,6 +37,8 @@ add_library(_bst_tree
 
 target_link_libraries(RBTree Qt${QT_VERSION_MAJOR}::Core)
 target_link_libraries(_bst_tree Qt${QT_VERSION_MAJOR}::Core)
+target_include_directories(_bst_tree PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+
 
 install(TARGETS RBTree
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})

@@ -60,6 +60,13 @@ public:
         return * this;
     }
 
+    // make excess copy
+      BinaryTreeIterator<T,M, TreeType> operator++(int) noexcept {  // NOLINT
+        BinaryTreeIterator<T, M, TreeType> retval = *this;
+        ++(*this);
+        return retval;
+      }
+
     bool operator!=(const BinaryTreeIterator & other){
         return  node_ != other.node_;
     }
@@ -71,9 +78,6 @@ public:
 
 
     std::pair<T,M> operator*(){
-        //      if (node_==tree_->end_node_){
-        //            return {0,0};
-        //      }
         if (node_==nullptr){
             throw std::runtime_error("error in opearator*, node_ is nullptr");
         }
