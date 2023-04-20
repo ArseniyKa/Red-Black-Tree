@@ -2,21 +2,21 @@
 #include <iostream>
 
 template <typename T, typename M> BinaryTree<T, M>::BinaryTree() {
-  qDebug() << "constructor was called";
+  qDebug() << "BinaryTree constructor was called";
 }
 
 template <typename T, typename M> BinaryTree<T, M>::~BinaryTree() {
-  qDebug() << "destructor was called";
+  qDebug() << "BinaryTree destructor was called";
 }
 
 template <typename T, typename M>
 BinaryTree<T, M>::BinaryTree(const BinaryTree &other) {
-  qDebug() << "copy constructor was called";
+  qDebug() << "BinaryTree copy constructor was called";
 }
 
 template <typename T, typename M>
 BinaryTree<T, M> &BinaryTree<T, M>::operator=(const BinaryTree &other) {
-  qDebug() << "copy assignment was called";
+  qDebug() << "BinaryTree copy assignment was called";
   return *this;
 }
 
