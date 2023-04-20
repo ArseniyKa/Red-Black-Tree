@@ -8,6 +8,7 @@
 #include <stdint.h>
 
 #include "BinaryTreeIterator.h"
+
   template <typename T, typename M> class BinaryTree {
 public:
     BinaryTree();
@@ -15,13 +16,13 @@ public:
     BinaryTree(const BinaryTree &other);
     BinaryTree &operator=(const BinaryTree &other);
 
-    void insert(T key, M value);
+   virtual void insert(T key, M value);
 
     std::int64_t size() const;
 
     Node<T, M> *&find(T key);
 
-    void remove(T key);
+   virtual void remove(T key);
 
     void traverse();
 
@@ -31,7 +32,7 @@ public:
 
      Node<T,M> * end_node_{nullptr};
 
-private:
+protected:
     void SubInsert(T key, M value, Node<T, M> *&node, Node<T, M> *parent);
 
     Node<T, M> *&SubFind(T key, Node<T, M> *node);

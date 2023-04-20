@@ -33,6 +33,7 @@ add_executable(RBTree
 
 add_library(_bst_tree
    BinaryTree.cpp
+   RedBlackTree.cpp
 )
 
 target_link_libraries(RBTree Qt${QT_VERSION_MAJOR}::Core)

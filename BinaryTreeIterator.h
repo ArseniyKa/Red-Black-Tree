@@ -15,6 +15,8 @@ template <typename T, typename M> struct Node {
      Node<T, M> *parent_{nullptr}; // указатель на предка
 };
 
+
+
 template <typename T, typename M, typename TreeType> class
     BinaryTreeIterator {
 public:

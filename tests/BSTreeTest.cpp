@@ -18,7 +18,6 @@ TEST_F(BinarySearchTest, BSTreeIteratorTest) { // NOLINT
 
   for (int i = 0; i < 20; i++) {
     char symbol = i + 100;
-    //    qDebug() << symbol;
     tree.insert(i, symbol);
     mapa.insert({i, symbol});
   }
@@ -30,7 +29,6 @@ TEST_F(BinarySearchTest, BSTreeIteratorTest) { // NOLINT
   while (itr != tree.end() && expected_itr != mapa.end()) {
     auto symbol = (*(itr)).second;
     auto expected_symbol = (*(expected_itr)).second;
-    //    qDebug() << symbol;
     std::cout << symbol << "\n";
     EXPECT_EQ(symbol, expected_symbol);
     ++expected_itr;

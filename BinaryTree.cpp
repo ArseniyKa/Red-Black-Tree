@@ -1,4 +1,5 @@
 #include "BinaryTree.h"
+#include <iostream>
 
 template <typename T, typename M> BinaryTree<T, M>::BinaryTree() {
   qDebug() << "constructor was called";
@@ -251,7 +252,7 @@ void BinaryTree<T, M>::SubTranverse(Node<T, M> *node) {
   }
 
   SubTranverse(node->left_);
-  qDebug() << node->key_ << "   " << node->value_;
+  std::cout << node->key_ << "   " << node->value_ << "\n";
   SubTranverse(node->right_);
 }
 
@@ -278,3 +279,4 @@ BinaryTreeIterator<T, M, BinaryTree<T, M>> BinaryTree<T, M>::end() {
 
 // explicit instantiation
 template class BinaryTree<int, char>;
+template class BinaryTree<int, std::string>;
