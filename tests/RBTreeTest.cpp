@@ -13,31 +13,24 @@ protected:
   RedBlackTreeTest() = default;
 };
 
+//======================================
+///@brief before left rotation:
+//                 X
+//       alpha             Y
+//                   beta /// gama
+
+///@brief after left rotation:
+//                    Y
+//          X        ///   gama
+//   alpha // beta
+//======================================
 TEST_F(RedBlackTreeTest, LeftRotationTest) { // NOLINT
   RedBlackTree<int, std::string> tree;
-  std::map<int, std::string> mapa;
-
-  //  for (int i = 0; i < 20; i++) {
-  //    std::string symbol = std::to_string(i + 100);
-  //    mapa.insert({i, symbol});
-  //  }
-
-  //======================================
-  ///@brief before left rotation:
-  //                 X
-  //       alpha             Y
-  //                   beta /// gama
-
-  ///@brief after left rotation:
-  //                    Y
-  //          X        ///   gama
-  //   alpha // beta
-  //======================================
 
   tree.BinaryTree::insert(33, "root");
-  tree.BinaryTree::insert(13, "wolf");
-  tree.BinaryTree::insert(20, "cat");
-  tree.BinaryTree::insert(37, "moon");
+  tree.BinaryTree::insert(13, "left_sub_root");
+  tree.BinaryTree::insert(20, "right_sub_root");
+  tree.BinaryTree::insert(37, "parent");
   tree.BinaryTree::insert(50, "X");
   tree.BinaryTree::insert(47, "alpha");
   tree.BinaryTree::insert(45, "alpha2");
@@ -48,18 +41,48 @@ TEST_F(RedBlackTreeTest, LeftRotationTest) { // NOLINT
   tree.BinaryTree::insert(84, "beta");
   tree.BinaryTree::insert(82, "beta2");
 
-  //    EXPECT_EQ(tree.size(), mapa.size());
+  auto *node = tree.find(50);
+  std::cout << "node is " << node->value_ << "\n";
+  std::cout << "left child is " << node->left_->value_ << "\n";
+  std::cout << "right child is " << node->right_->value_ << "\n";
 
-  //    auto expected_itr = mapa.begin();
-  //    auto itr = tree.begin();
-  //    while (itr != tree.end() && expected_itr != mapa.end()) {
-  //        auto symbol = (*(itr)).second;
-  //        auto expected_symbol = (*(expected_itr)).second;
-  //        std::cout << symbol << "\n";
-  //        EXPECT_EQ(symbol, expected_symbol);
-  //        ++expected_itr;
-  //        ++itr;
-  //    }
+  std::cout << "left child of right child is " << node->right_->left_->value_
+            << "\n";
+  std::cout << "right child of right child is " << node->right_->right_->value_
+            << "\n";
+
+  std::cout << "X parent is " << node->parent_->value_ << "\n";
+  std::cout << "parent child is " << node->parent_->right_->value_ << "\n";
+
+  auto node_val = node->value_;
+  auto left_child_val = node->left_->value_;
+  auto right_child_val = node->right_->value_;
+  auto left_child_of_right_child_val = node->right_->left_->value_;
+  auto right_child_of_right_child_val = node->right_->right_->value_;
+  auto X_parent_val = node->parent_->value_;
+  auto parent_child_val = node->parent_->right_->value_;
+
+  tree.LeftRotation(node);
+
+  std::cout << "=====================\n";
+  std::cout << "node is " << node->value_ << "\n";
+  std::cout << "left child is " << node->left_->value_ << "\n";
+  std::cout << "right child is " << node->right_->value_ << "\n";
+
+  std::cout << "parent is " << node->parent_->value_ << "\n";
+  std::cout << "sibling is " << node->parent_->right_->value_ << "\n";
+
+  std::cout << "Y parent is " << node->parent_->parent_->value_ << "\n";
+  std::cout << "parent child is " << node->parent_->parent_->right_->value_
+            << "\n";
+
+  EXPECT_EQ(node_val, node->value_);
+  EXPECT_EQ(left_child_val, node->left_->value_);
+  EXPECT_EQ(right_child_val, node->parent_->value_);
+  EXPECT_EQ(left_child_of_right_child_val, node->right_->value_);
+  EXPECT_EQ(right_child_of_right_child_val, node->parent_->right_->value_);
+  EXPECT_EQ(X_parent_val, node->parent_->parent_->value_);
+  EXPECT_EQ(parent_child_val, node->value_);
 }
 
 } // namespace bstree::test
