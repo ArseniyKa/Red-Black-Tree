@@ -29,7 +29,7 @@ TEST_F(BinarySearchTest, BSTreeIteratorTest) { // NOLINT
   while (itr != tree.end() && expected_itr != mapa.end()) {
     auto symbol = (*(itr)).second;
     auto expected_symbol = (*(expected_itr)).second;
-    std::cout << symbol << "\n";
+    //    std::cout << symbol << "\n";
     EXPECT_EQ(symbol, expected_symbol);
     ++expected_itr;
     ++itr;

@@ -23,7 +23,7 @@ BinaryTree<T, M> &BinaryTree<T, M>::operator=(const BinaryTree &other) {
 template <typename T, typename M>
 void BinaryTree<T, M>::insert(T key, M value) {
   if (root_ == nullptr) {
-    InitNode(key, value, root_, nullptr);
+    CreateNewNode(key, value, root_, nullptr);
     return;
   }
 
@@ -79,7 +79,7 @@ void BinaryTree<T, M>::SubInsert(T key, M value, Node<T, M> *&node,
                                  Node<T, M> *parent) {
   // место где добавляется новый узел
   if (node == nullptr) {
-    InitNode(key, value, node, parent);
+    CreateNewNode(key, value, node, parent);
     return;
   }
 
@@ -109,8 +109,13 @@ Node<T, M> *&BinaryTree<T, M>::SubFind(T key, Node<T, M> *node) {
 }
 
 template <typename T, typename M>
-void BinaryTree<T, M>::InitNode(T key, M value, Node<T, M> *&node,
-                                Node<T, M> *parent) {
+void BinaryTree<T, M>::CreateNewNode(T key, M value, Node<T, M> *&node,
+                                     Node<T, M> *parent) {
+
+  if (node != nullptr) {
+    throw std::runtime_error("Error in CreateNewNode() method");
+  }
+
   node = new Node<T, M>;
   node->key_ = key;
   node->value_ = value;
@@ -254,6 +259,14 @@ void BinaryTree<T, M>::SubTranverse(Node<T, M> *node) {
   SubTranverse(node->left_);
   std::cout << node->key_ << "   " << node->value_ << "\n";
   SubTranverse(node->right_);
+}
+
+template <typename T, typename M>
+void BinaryTree<T, M>::CheckNode(Node<T, M> *node,
+                                 const std::string &error_message) const {
+  if (node == nullptr) {
+    throw std::runtime_error(error_message);
+  }
 }
 
 template <typename T, typename M>

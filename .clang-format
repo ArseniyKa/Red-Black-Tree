@@ -1,14 +1,8 @@
 ---
-Language:        Cpp
-BasedOnStyle:  Google
+Language: Cpp
+BasedOnStyle: Google
 IndentWidth: 4
 AccessModifierOffset: -2
-DerivePointerAlignment: false
-PointerAlignment: Left
----
-Language: JavaScript
-BasedOnStyle:  Google
-ColumnLimit: 100
 ---
 Language: Json
 BasedOnStyle: Google
