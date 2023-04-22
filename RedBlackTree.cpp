@@ -21,26 +21,24 @@ template <typename T, typename M> RedBlackTree<T, M>::~RedBlackTree() {
 //   alpha // beta
 //======================================
 template <typename T, typename M>
-void RedBlackTree<T, M>::LeftRotation(Node<T, M> *node) {
-  // node is X
-  auto *right_child = node->right_;                     // Y
-  auto *left_child_of_right_child = right_child->left_; // beta
-  auto *parent = node->parent_; // upper parent, not see in the picture
+void RedBlackTree<T, M>::LeftRotation(Node<T, M> *X) {
+  auto *Y = X->right_;
+  auto *beta = Y->left_;
+  auto *parent = X->parent_; // upper parent of X, not see in the picture
 
-  if (this->size_ < 3 || node == nullptr || right_child == nullptr ||
-      parent == nullptr || left_child_of_right_child == nullptr) {
+  if (this->size_ < 3 || X == nullptr || Y == nullptr || parent == nullptr ||
+      beta == nullptr) {
     throw std::runtime_error("error in LeftRotation");
   }
   // init X - beta
-  CreateRightEdge(node, left_child_of_right_child);
+  CreateRightEdge(X, beta);
 
   // init X - Y
-  CreateLeftEdge(right_child, node);
+  CreateLeftEdge(Y, X);
 
   // init upper parent - Y
-  bool node_is_left = IsLeftSideOfNode(node);
-  node_is_left ? CreateLeftEdge(parent, right_child)
-               : CreateRightEdge(parent, right_child);
+  bool node_is_left = IsLeftSideOfNode(X);
+  node_is_left ? CreateLeftEdge(parent, Y) : CreateRightEdge(parent, Y);
 }
 
 //======================================
@@ -55,26 +53,25 @@ void RedBlackTree<T, M>::LeftRotation(Node<T, M> *node) {
 //                   beta /// gama
 //======================================
 template <typename T, typename M>
-void RedBlackTree<T, M>::RightRotation(Node<T, M> *node) {
+void RedBlackTree<T, M>::RightRotation(Node<T, M> *X) {
   // node is X
-  auto *parent = node->parent_;        // Y
-  auto *right_child = node->right_;    // beta
-  auto *grandfather = parent->parent_; // upper parent
+  auto *Y = X->parent_;
+  auto *beta = X->right_;
+  auto *parent = Y->parent_; // upper parent of Y
 
-  if (this->size_ < 3 || node == nullptr || right_child == nullptr ||
-      parent == nullptr || grandfather == nullptr) {
+  if (this->size_ < 3 || X == nullptr || beta == nullptr || Y == nullptr ||
+      parent == nullptr) {
     throw std::runtime_error("error in LeftRotation");
   }
   // init X - Y
-  CreateRightEdge(node, parent);
+  CreateRightEdge(X, Y);
 
   // init Y - beta
-  CreateLeftEdge(parent, right_child);
+  CreateLeftEdge(Y, beta);
 
   // init upper parent - X
-  bool node_is_left = IsLeftSideOfNode(parent);
-  node_is_left ? CreateLeftEdge(grandfather, node)
-               : CreateRightEdge(grandfather, node);
+  bool node_is_left = IsLeftSideOfNode(Y);
+  node_is_left ? CreateLeftEdge(parent, X) : CreateRightEdge(parent, X);
 }
 
 template <typename T, typename M>
