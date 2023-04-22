@@ -47,32 +47,14 @@ template <typename T, typename M> class RedBlackTree : public BinaryTree<T,M> {
     }
 
 
-    void LeftRotation(Node<T, M> * node) {
-        if (this->size_<2){
-            throw std::runtime_error("error in LeftRotation");
-        }
+    void LeftRotation(Node<T, M> * node);
+    void RightRotation(Node<T, M> * node);
 
-        auto * parent = node->parent_;
-        auto * right_child = node->right_;
+  private:
+    void CreateLeftEdge(Node<T, M> * upper_node, Node<T, M> * lower_node);
 
-        auto * left_child_of_right_child = right_child->left_;
+    void CreateRightEdge(Node<T, M> * upper_node, Node<T, M> * lower_node);
 
-        bool node_is_left = IsLeftSideOfNode(node);
-        if (node_is_left) {
-            parent->left_ = right_child;
-        } else {
-            parent->right_ = right_child;
-        }
-
-        right_child->parent_ = parent;
-
-        node->right_ = left_child_of_right_child;
-        left_child_of_right_child->parent_ =node;
-
-        node->parent_ = right_child;
-        right_child->left_ = node;
-
-    }
 
 };
 
