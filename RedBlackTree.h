@@ -23,6 +23,7 @@ public:
 
   void insert(T key, M value) override;
 
+  RBNode<T, M> *GetUncle(Node<T, M> *node);
 private:
   void CreateLeftEdge(Node<T, M> *upper_node, Node<T, M> *lower_node);
 
@@ -33,7 +34,6 @@ private:
   void CreateNewNode(T key, M value, Node<T, M> *&node,
                      Node<T, M> *parent) override;
 
-  RBNode<T, M> *GetUncle(Node<T, M> *node);
 
   RBNode<T, M> *GetRBNode(Node<T, M> *node) const;
 

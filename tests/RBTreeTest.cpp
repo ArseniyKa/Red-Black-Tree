@@ -174,4 +174,55 @@ TEST_F(RedBlackTreeTest, RightRotationTest) { // NOLINTleft_
 
   EXPECT_EQ(size, tree.size());
 }
+
+TEST_F(RedBlackTreeTest, GetNodeUncleTest) { // NOLINTleft_
+  RedBlackTree<int, std::string> tree;
+
+  tree.BinaryTree::insert(33, "root");
+  tree.BinaryTree::insert(13, "left_sub_root");
+  tree.BinaryTree::insert(10, "left_sub_sub_root");
+  tree.BinaryTree::insert(34, "right_sub_root");
+  tree.BinaryTree::insert(37, "parent");
+  tree.BinaryTree::insert(50, "X");
+  tree.BinaryTree::insert(47, "alpha");
+  tree.BinaryTree::insert(45, "alpha2");
+  tree.BinaryTree::insert(43, "alpha3");
+  tree.BinaryTree::insert(89, "Y");
+  tree.BinaryTree::insert(92, "gamma");
+  tree.BinaryTree::insert(99, "gamma2");
+  tree.BinaryTree::insert(84, "beta");
+  tree.BinaryTree::insert(82, "beta2");
+
+  auto *node1 = tree.find(50);
+  auto *uncle1 = tree.GetUncle(node1);
+  //  if (uncle == nullptr) {
+  //    qDebug() << "nullptr";
+  //  }
+  //  std::cout << "uncle " << uncle->value_ << "\n";
+
+  EXPECT_EQ(uncle1, nullptr);
+
+  auto node2 = tree.find(92);
+  auto *uncle2 = tree.GetUncle(node2);
+  EXPECT_EQ(uncle2->value_, "alpha");
+
+  auto node3 = tree.find(10);
+  auto *uncle3 = tree.GetUncle(node3);
+  EXPECT_EQ(uncle3->value_, "right_sub_root");
+  qDebug() << uncle3->value_.data();
+
+  //  bool is_exception = false;
+  std::string error_message;
+  try {
+
+    auto node4 = tree.find(13);
+    auto *uncle4 = tree.GetUncle(node4);
+  } catch (std::exception &ex) {
+    error_message = ex.what();
+  }
+
+  EXPECT_EQ(error_message, "Error in GetUncle(): grandfather is nullptr");
+
+  //  EXPECT_EQ(uncle3->value_, "right_sub_root");
+}
 } // namespace bstree::test

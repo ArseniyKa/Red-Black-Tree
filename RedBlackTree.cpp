@@ -211,6 +211,7 @@ void RedBlackTree<T, M>::ParentUncleAreRedCase(RBNode<T, M> *node) {
   auto *parent = dynamic_cast<RBNode<T, M> *>(node->parent_);
   auto *uncle = GetUncle(node);
   auto *grandfather = dynamic_cast<RBNode<T, M> *>(parent->parent_);
+
   recolor(parent);
   recolor(uncle);
   if (grandfather->value_ != this->root_->value_) {
@@ -236,8 +237,9 @@ void RedBlackTree<T, M>::ParentRightChildNodeRightChildCase(
 
 template <typename T, typename M>
 void RedBlackTree<T, M>::RedParentCase(RBNode<T, M> *node) {
-  auto *uncle = GetUncle(node);
+  this->CheckNode(node, "Error in RedParentCase(): node is nullptr");
 
+  auto *uncle = GetUncle(node);
   if (uncle != nullptr && uncle->color_ == Color::Red) {
     ParentUncleAreRedCase(node);
     return;
