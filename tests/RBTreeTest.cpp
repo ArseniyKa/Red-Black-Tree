@@ -195,11 +195,6 @@ TEST_F(RedBlackTreeTest, GetNodeUncleTest) { // NOLINTleft_
 
   auto *node1 = tree.find(50);
   auto *uncle1 = tree.GetUncle(node1);
-  //  if (uncle == nullptr) {
-  //    qDebug() << "nullptr";
-  //  }
-  //  std::cout << "uncle " << uncle->value_ << "\n";
-
   EXPECT_EQ(uncle1, nullptr);
 
   auto node2 = tree.find(92);
@@ -222,7 +217,41 @@ TEST_F(RedBlackTreeTest, GetNodeUncleTest) { // NOLINTleft_
   }
 
   EXPECT_EQ(error_message, "Error in GetUncle(): grandfather is nullptr");
-
-  //  EXPECT_EQ(uncle3->value_, "right_sub_root");
 }
+
+TEST_F(RedBlackTreeTest, IsLeftSideOfNodeTest) { // NOLINTleft_
+  RedBlackTree<int, std::string> tree;
+
+  tree.BinaryTree::insert(33, "root");
+  tree.BinaryTree::insert(13, "left_sub_root");
+  tree.BinaryTree::insert(10, "left_sub_sub_root");
+  tree.BinaryTree::insert(34, "right_sub_root");
+  tree.BinaryTree::insert(37, "parent");
+  tree.BinaryTree::insert(50, "X");
+  tree.BinaryTree::insert(47, "alpha");
+  tree.BinaryTree::insert(45, "alpha2");
+  tree.BinaryTree::insert(43, "alpha3");
+  tree.BinaryTree::insert(89, "Y");
+  tree.BinaryTree::insert(92, "gamma");
+  tree.BinaryTree::insert(99, "gamma2");
+  tree.BinaryTree::insert(84, "beta");
+  tree.BinaryTree::insert(82, "beta2");
+
+  auto *node1 = tree.find(50);
+  bool is_left_node1 = tree.IsLeftSideOfNode(node1);
+  EXPECT_EQ(is_left_node1, false);
+
+  auto *node2 = tree.find(13);
+  bool is_left_node2 = tree.IsLeftSideOfNode(node2);
+  EXPECT_EQ(is_left_node2, true);
+
+  auto *node3 = tree.find(89);
+  bool is_left_node3 = tree.IsLeftSideOfNode(node3);
+  EXPECT_EQ(is_left_node3, false);
+
+  auto *node4 = tree.find(82);
+  bool is_left_node4 = tree.IsLeftSideOfNode(node4);
+  EXPECT_EQ(is_left_node4, true);
+}
+
 } // namespace bstree::test

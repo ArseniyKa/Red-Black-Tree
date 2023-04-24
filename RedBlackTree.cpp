@@ -15,8 +15,11 @@ bool RedBlackTree<T, M>::IsLeftSideOfNode(Node<T, M> *node) {
     throw std::runtime_error("error in IsLeftSide. Node is nullptr");
   }
 
-  auto *parent = node->parent_;
+  if (node->value_ == this->root_->value_) {
+    throw std::runtime_error("error in IsLeftSide. root doesn't have parent");
+  }
 
+  auto *parent = node->parent_;
   if (parent == nullptr) {
     throw std::runtime_error("error in IsLeftSide. parent is nullptr");
   }
