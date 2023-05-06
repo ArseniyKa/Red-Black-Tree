@@ -24,6 +24,9 @@ public:
   void insert(T key, M value) override;
 
   RBNode<T, M> *GetUncle(Node<T, M> *node);
+
+  [[nodiscard]] Color GetColor(Node<T, M> *node) const;
+
 private:
   void CreateLeftEdge(Node<T, M> *upper_node, Node<T, M> *lower_node);
 
@@ -34,15 +37,17 @@ private:
   void CreateNewNode(T key, M value, Node<T, M> *&node,
                      Node<T, M> *parent) override;
 
-
   RBNode<T, M> *GetRBNode(Node<T, M> *node) const;
 
   void RedParentCase(RBNode<T, M> *node);
 
-  void ParentUncleAreRedCase(RBNode<T,M> * node);
-  void ParentRedUncleBlackCase(RBNode<T, M> *node);
+  void RedParentRedUncleCase(RBNode<T, M> *node);
+  void RedParentBlackUncleCase(RBNode<T, M> *node);
 
-  void ParentRightChildNodeRightChildCase(RBNode<T, M> *node);
+  void RightParentRightNodeCase(RBNode<T, M> *node);
+  void RightParentLeftNodeCase(RBNode<T, M> *node);
+  void LeftParentLeftNodeCase(RBNode<T, M> *node);
+  void LeftParentRightNodeCase(RBNode<T, M> *node);
 };
 
 #endif // REDBLACKTREE_H

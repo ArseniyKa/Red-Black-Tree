@@ -2,11 +2,11 @@
 #include <iostream>
 
 template <typename T, typename M> BinaryTree<T, M>::BinaryTree() {
-  qDebug() << "BinaryTree constructor was called";
+  //  qDebug() << "BinaryTree constructor was called";
 }
 
 template <typename T, typename M> BinaryTree<T, M>::~BinaryTree() {
-  qDebug() << "BinaryTree destructor was called";
+  //  qDebug() << "BinaryTree destructor was called";
 }
 
 template <typename T, typename M>

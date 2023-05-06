@@ -2,11 +2,11 @@
 #include <string>
 
 template <typename T, typename M> RedBlackTree<T, M>::RedBlackTree() {
-  qDebug() << "Red Black tree constructor";
+  //  qDebug() << "Red Black tree constructor";
 }
 
 template <typename T, typename M> RedBlackTree<T, M>::~RedBlackTree() {
-  qDebug() << "Red Black tree destructor";
+  //  qDebug() << "Red Black tree destructor";
 }
 
 template <typename T, typename M>
@@ -57,8 +57,10 @@ void RedBlackTree<T, M>::LeftRotation(Node<T, M> *X) {
   auto *beta = Y->left_;
   auto *parent = X->parent_; // upper parent of X, not see in the picture
 
-  if (this->size_ < 3 || X == nullptr || Y == nullptr || parent == nullptr ||
-      beta == nullptr) {
+  // init upper parent - Y
+  bool node_is_left = IsLeftSideOfNode(X);
+
+  if (this->size_ < 3 || X == nullptr || Y == nullptr || parent == nullptr) {
     throw std::runtime_error("error in LeftRotation");
   }
   // init X - beta
@@ -67,8 +69,6 @@ void RedBlackTree<T, M>::LeftRotation(Node<T, M> *X) {
   // init X - Y
   CreateLeftEdge(Y, X);
 
-  // init upper parent - Y
-  bool node_is_left = IsLeftSideOfNode(X);
   node_is_left ? CreateLeftEdge(parent, Y) : CreateRightEdge(parent, Y);
 }
 
@@ -90,6 +90,9 @@ void RedBlackTree<T, M>::RightRotation(Node<T, M> *X) {
   auto *beta = X->right_;
   auto *parent = Y->parent_; // upper parent of Y
 
+  // init upper parent - X
+  bool node_is_left = IsLeftSideOfNode(Y);
+
   if (this->size_ < 3 || X == nullptr || beta == nullptr || Y == nullptr ||
       parent == nullptr) {
     throw std::runtime_error("error in LeftRotation");
@@ -100,8 +103,6 @@ void RedBlackTree<T, M>::RightRotation(Node<T, M> *X) {
   // init Y - beta
   CreateLeftEdge(Y, beta);
 
-  // init upper parent - X
-  bool node_is_left = IsLeftSideOfNode(Y);
   node_is_left ? CreateLeftEdge(parent, X) : CreateRightEdge(parent, X);
 }
 
@@ -122,19 +123,19 @@ void RedBlackTree<T, M>::recolor(RBNode<T, M> *node) {
   }
 
   bool is_black_color = color == Color::Black;
-  color = is_black_color ? Color::Red : Color::Black;
+  node->color_ = is_black_color ? Color::Red : Color::Black;
 }
 
 template <typename T, typename M>
 void RedBlackTree<T, M>::insert(T key, M value) {
   this->BinaryTree<T, M>::insert(key, value); // simple insert a node
-
-  auto *rb_node = GetRBNode(this->find(key));
-  auto *parent = GetRBNode(rb_node->parent_);
-  if (this->root_ == nullptr) {
+  if (this->size_ == 1) {
     TreeEmtyCase(key, value);
     return;
   }
+
+  auto *rb_node = GetRBNode(this->find(key));
+  auto *parent = GetRBNode(rb_node->parent_);
 
   this->CheckNode(parent, "Error in insert() method");
   if (parent->color_ == Color::Red) {
@@ -153,6 +154,10 @@ void RedBlackTree<T, M>::CreateLeftEdge(Node<T, M> *upper_node,
 template <typename T, typename M>
 void RedBlackTree<T, M>::CreateRightEdge(Node<T, M> *upper_node,
                                          Node<T, M> *lower_node) {
+  if (lower_node == nullptr) {
+    upper_node->right_ = nullptr;
+    return;
+  }
   upper_node->right_ = lower_node;
   lower_node->parent_ = upper_node;
 }
@@ -165,8 +170,6 @@ void RedBlackTree<T, M>::TreeEmtyCase(T key, M value) {
 
   auto rb_node = dynamic_cast<RBNode<T, M> *>(this->root_);
   rb_node->color_ = Color::Black;
-
-  //  CreateNewNode(key, value, this->root_, nullptr);
 }
 
 template <typename T, typename M>
@@ -204,16 +207,30 @@ RBNode<T, M> *RedBlackTree<T, M>::GetUncle(Node<T, M> *node) {
 }
 
 template <typename T, typename M>
+Color RedBlackTree<T, M>::GetColor(Node<T, M> *node) const {
+  this->CheckNode(node, "Error in GetColor(): node is nullptr");
+  auto *rb_node = GetRBNode(node);
+  return rb_node->color_;
+}
+
+template <typename T, typename M>
 RBNode<T, M> *RedBlackTree<T, M>::GetRBNode(Node<T, M> *node) const {
   this->CheckNode(node, "Error in GetRBNode() method, node is nullptr");
   return dynamic_cast<RBNode<T, M> *>(node);
 }
 
 template <typename T, typename M>
-void RedBlackTree<T, M>::ParentUncleAreRedCase(RBNode<T, M> *node) {
+void RedBlackTree<T, M>::RedParentRedUncleCase(RBNode<T, M> *node) {
   auto *parent = dynamic_cast<RBNode<T, M> *>(node->parent_);
   auto *uncle = GetUncle(node);
   auto *grandfather = dynamic_cast<RBNode<T, M> *>(parent->parent_);
+
+  this->CheckNode(node,
+                  "Error in ParentUncleAreRedCase() method, parent is nullptr");
+  this->CheckNode(node,
+                  "Error in ParentUncleAreRedCase() method, uncle is nullptr");
+  this->CheckNode(
+      node, "Error in ParentUncleAreRedCase() method, grandfather is nullptr");
 
   recolor(parent);
   recolor(uncle);
@@ -223,19 +240,74 @@ void RedBlackTree<T, M>::ParentUncleAreRedCase(RBNode<T, M> *node) {
 }
 
 template <typename T, typename M>
-void RedBlackTree<T, M>::ParentRedUncleBlackCase(RBNode<T, M> *node) {
+void RedBlackTree<T, M>::RedParentBlackUncleCase(RBNode<T, M> *node) {
   this->CheckNode(node, "Error in ParentRedUncleBlackCase(): node is nullptr");
   auto *uncle = GetUncle(node);
   auto *parent = GetRBNode(node->parent_);
-  bool is_parent_right = IsLeftSideOfNode(parent);
-  ParentRightChildNodeRightChildCase(node);
+  bool is_parent_right = !IsLeftSideOfNode(parent);
+  bool is_node_right = !IsLeftSideOfNode(node);
+  if (is_parent_right && is_node_right) {
+    RightParentRightNodeCase(node);
+  } else if (is_parent_right && !is_node_right) {
+    RightParentLeftNodeCase(node);
+  } else if (!is_parent_right && !is_node_right) {
+    LeftParentLeftNodeCase(node);
+  } else if (!is_parent_right && is_node_right) {
+    LeftParentRightNodeCase(node);
+  }
 }
 
 template <typename T, typename M>
-void RedBlackTree<T, M>::ParentRightChildNodeRightChildCase(
-    RBNode<T, M> *node) {
+void RedBlackTree<T, M>::RightParentRightNodeCase(RBNode<T, M> *node) {
   this->CheckNode(
       node, "Error in ParentRightChildNodeRightChildCase(): node is nullptr");
+  auto *parent = node->parent_;
+  this->CheckNode(
+      parent,
+      "Error in ParentRightChildNodeRightChildCase(): parent is nullptr");
+  auto *grandparent = parent->parent_;
+  this->CheckNode(
+      grandparent,
+      "Error in ParentRightChildNodeRightChildCase(): grandparent is nullptr");
+
+  LeftRotation(grandparent);
+  recolor(GetRBNode(grandparent));
+  recolor(GetRBNode(parent));
+}
+
+template <typename T, typename M>
+void RedBlackTree<T, M>::RightParentLeftNodeCase(RBNode<T, M> *node) {
+  this->CheckNode(node, "Error in RightParentLeftNodeCase(): node is nullptr");
+  auto *parent = node->parent_;
+  this->CheckNode(node,
+                  "Error in RightParentLeftNodeCase(): parent is nullptr");
+  RightRotation(node);
+  RightParentRightNodeCase(GetRBNode(parent));
+}
+
+template <typename T, typename M>
+void RedBlackTree<T, M>::LeftParentLeftNodeCase(RBNode<T, M> *node) {
+
+  this->CheckNode(node, "Error in LeftParentLeftNodeCase(): node is nullptr");
+  auto *parent = node->parent_;
+  this->CheckNode(parent,
+                  "Error in LeftParentLeftNodeCase(): parent is nullptr");
+  auto *grandparent = parent->parent_;
+  this->CheckNode(grandparent,
+                  "Error in LeftParentLeftNodeCase(): grandparent is nullptr");
+  RightRotation(parent);
+  recolor(GetRBNode(grandparent));
+  recolor(GetRBNode(parent));
+}
+
+template <typename T, typename M>
+void RedBlackTree<T, M>::LeftParentRightNodeCase(RBNode<T, M> *node) {
+  this->CheckNode(node, "Error in RightParentLeftNodeCase(): node is nullptr");
+  auto *parent = node->parent_;
+  this->CheckNode(node,
+                  "Error in RightParentLeftNodeCase(): parent is nullptr");
+  LeftRotation(parent);
+  LeftParentLeftNodeCase(GetRBNode(parent));
 }
 
 template <typename T, typename M>
@@ -244,10 +316,12 @@ void RedBlackTree<T, M>::RedParentCase(RBNode<T, M> *node) {
 
   auto *uncle = GetUncle(node);
   if (uncle != nullptr && uncle->color_ == Color::Red) {
-    ParentUncleAreRedCase(node);
-    return;
-  } else {
-    ParentRedUncleBlackCase(node);
+    RedParentRedUncleCase(node);
+  } else if (uncle == nullptr || uncle->color_ == Color::Black) {
+    RedParentBlackUncleCase(node);
+  } else if (uncle->color_ == Color::Undefined) {
+    throw std::runtime_error(
+        "Error in RedParentCase():Uncle color is Undefined");
   }
 }
 

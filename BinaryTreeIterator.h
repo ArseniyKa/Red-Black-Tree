@@ -19,10 +19,10 @@ template <typename T, typename M, typename TreeType> class BinaryTreeIterator {
 public:
   BinaryTreeIterator(TreeType *tree, Node<T, M> *node)
       : tree_(tree), node_(node) {
-    qDebug() << "BinaryTreeIterator constructor";
+//    qDebug() << "BinaryTreeIterator constructor";
   }
 
-  ~BinaryTreeIterator() { qDebug() << "BinaryTreeIterator destructor"; }
+//  ~BinaryTreeIterator() { qDebug() << "BinaryTreeIterator destructor"; }
 
   BinaryTreeIterator &operator++() {
     if (node_ == nullptr) {

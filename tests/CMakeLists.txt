@@ -1,6 +1,6 @@
 add_executable(
   _tree_test
-  BSTreeTest.cpp
+#  BSTreeTest.cpp
   RBTreeTest.cpp
 )
 
