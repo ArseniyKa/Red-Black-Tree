@@ -93,9 +93,8 @@ void RedBlackTree<T, M>::RightRotation(Node<T, M> *X) {
   // init upper parent - X
   bool node_is_left = IsLeftSideOfNode(Y);
 
-  if (this->size_ < 3 || X == nullptr || beta == nullptr || Y == nullptr ||
-      parent == nullptr) {
-    throw std::runtime_error("error in LeftRotation");
+  if (this->size_ < 3 || X == nullptr || Y == nullptr || parent == nullptr) {
+    throw std::runtime_error("error in RightRotation()");
   }
   // init X - Y
   CreateRightEdge(X, Y);
@@ -137,7 +136,7 @@ void RedBlackTree<T, M>::insert(T key, M value) {
   auto *rb_node = GetRBNode(this->find(key));
   auto *parent = GetRBNode(rb_node->parent_);
 
-  this->CheckNode(parent, "Error in insert() method");
+  this->CheckNode(parent, "Error in insert() method: parent is nullptr");
   if (parent->color_ == Color::Red) {
     RedParentCase(rb_node);
     return;
@@ -147,6 +146,10 @@ void RedBlackTree<T, M>::insert(T key, M value) {
 template <typename T, typename M>
 void RedBlackTree<T, M>::CreateLeftEdge(Node<T, M> *upper_node,
                                         Node<T, M> *lower_node) {
+  if (lower_node == nullptr) {
+    upper_node->left_ = nullptr;
+    return;
+  }
   upper_node->left_ = lower_node;
   lower_node->parent_ = upper_node;
 }
