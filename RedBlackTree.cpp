@@ -98,7 +98,7 @@ void RedBlackTree<T, M>::RightRotation(Node<T, M> *X) {
   bool node_is_left = IsLeftSideOfNode(Y);
 
   if (this->size_ < 3 || X == nullptr || Y == nullptr || parent == nullptr) {
-    throw std::runtime_error("error in RightRotation()");
+    ErrorMessage("error in RightRotation()");
   }
   // init X - Y
   CreateRightEdge(X, Y);
@@ -113,14 +113,11 @@ template <typename T, typename M>
 void RedBlackTree<T, M>::recolor(RBNode<T, M> *node) {
   if (node == nullptr ||
       (node->parent_ == nullptr && node->key_ != this->root_->key_)) {
-    throw std::runtime_error("Error in recolor()");
+    ErrorMessage("Error in recolor()");
   }
 
   auto color = node->color_;
-  if (color == Color::Undefined) {
-    throw std::runtime_error(
-        "Error in recolor(): color was previously undefined");
-  }
+  CheckColor(color);
 
   if (node->key_ == this->root_->key_) {
     node->color_ = Color::Black;
@@ -174,7 +171,7 @@ void RedBlackTree<T, M>::CreateRightEdge(Node<T, M> *upper_node,
 template <typename T, typename M>
 void RedBlackTree<T, M>::TreeEmtyCase(T key, M value) {
   if (this->size_ != 1 || this->root_ == nullptr) {
-    throw std::runtime_error("Error in TreeEmtyCase()");
+    ErrorMessage("Error in TreeEmtyCase()");
   }
 
   auto rb_node = dynamic_cast<RBNode<T, M> *>(this->root_);
@@ -194,9 +191,9 @@ void RedBlackTree<T, M>::CreateNewNode(T key, M value, Node<T, M> *&node,
   node->value_ = value;
   node->parent_ = parent;
 
-  auto *rb_node = dynamic_cast<RBNode<T, M> *>(node);
-  rb_node->color_ =
-      Color::Red; // по умолчанию всегда выставляется сначала красный цвет
+  auto *rb_node = GetRBNode(node);
+  // по умолчанию всегда выставляется сначала красный цвет
+  rb_node->color_ = Color::Red;
   this->size_++;
 }
 
@@ -238,7 +235,6 @@ void RedBlackTree<T, M>::RedParentRedUncleCase(RBNode<T, M> *node) {
   recolor(uncle);
   if (grandfather->value_ != this->root_->value_) {
     recolor(grandfather);
-    //    auto rb_grandfather = GetRBNode(grandfather);
     auto rb_grandfather_father = GetRBNode(grandfather->parent_);
     // проделать первые шаги для дедушки если его отец красный и он красный
     if (rb_grandfather_father->color_ == Color::Red) {
@@ -267,16 +263,12 @@ void RedBlackTree<T, M>::RedParentBlackUncleCase(RBNode<T, M> *node) {
 
 template <typename T, typename M>
 void RedBlackTree<T, M>::RightParentRightNodeCase(RBNode<T, M> *node) {
-  this->CheckNode(
-      node, "Error in ParentRightChildNodeRightChildCase(): node is nullptr");
+  const std::string message = "Error in RightParentRightNodeCase(): ";
+  this->CheckNode(node, message + "node is nullptr");
   auto *parent = node->parent_;
-  this->CheckNode(
-      parent,
-      "Error in ParentRightChildNodeRightChildCase(): parent is nullptr");
+  this->CheckNode(parent, message + "parent is nullptr");
   auto *grandparent = parent->parent_;
-  this->CheckNode(
-      grandparent,
-      "Error in ParentRightChildNodeRightChildCase(): grandparent is nullptr");
+  this->CheckNode(grandparent, message + "grandparent is nullptr");
 
   LeftRotation(grandparent);
   recolor(GetRBNode(grandparent));
@@ -319,17 +311,30 @@ void RedBlackTree<T, M>::LeftParentRightNodeCase(RBNode<T, M> *node) {
 }
 
 template <typename T, typename M>
+void RedBlackTree<T, M>::ErrorMessage(const std::string &message) const {
+  throw std::runtime_error(message);
+}
+
+template <typename T, typename M>
+void RedBlackTree<T, M>::CheckColor(const Color color) {
+  if (color == Color::Undefined) {
+    throw std::runtime_error(
+        "Error in recolor(): color was previously undefined");
+  }
+}
+
+template <typename T, typename M>
 void RedBlackTree<T, M>::RedParentCase(RBNode<T, M> *node) {
   this->CheckNode(node, "Error in RedParentCase(): node is nullptr");
 
+  // uncle can be nullptr
   auto *uncle = GetUncle(node);
   if (uncle != nullptr && uncle->color_ == Color::Red) {
     RedParentRedUncleCase(node);
   } else if (uncle == nullptr || uncle->color_ == Color::Black) {
     RedParentBlackUncleCase(node);
-  } else if (uncle->color_ == Color::Undefined) {
-    throw std::runtime_error(
-        "Error in RedParentCase():Uncle color is Undefined");
+  } else {
+    ErrorMessage("Error in RedParentCase()");
   }
 }
 

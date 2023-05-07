@@ -46,6 +46,9 @@ private:
   void RightParentLeftNodeCase(RBNode<T, M> *node);
   void LeftParentLeftNodeCase(RBNode<T, M> *node);
   void LeftParentRightNodeCase(RBNode<T, M> *node);
+
+  void ErrorMessage(const std::string &message) const;
+  void CheckColor(const Color color);
 };
 
 #endif // REDBLACKTREE_H
