@@ -28,6 +28,12 @@ protected:
       index++;
     }
   }
+
+  template <typename T, typename M>
+  void checkNode(RBNode<T, M> *node, T true_key, Color true_color) {
+    EXPECT_EQ(node->key_, true_key);
+    EXPECT_EQ(node->color_, true_color);
+  }
 };
 
 //======================================
@@ -413,6 +419,22 @@ TEST_F(RedBlackTreeTest,
       {9, Color::Red}};
 
   checkTreeNodes(tree, answers);
+
+  auto *root = tree.root();
+  auto *rb_root = tree.GetRBNode(root);
+
+  checkNode(rb_root, 3, Color::Black);
+  checkNode(tree.GetRBNode(rb_root->left_), 1, Color::Black);
+  checkNode(tree.GetRBNode(rb_root->left_->left_), 0, Color::Black);
+  checkNode(tree.GetRBNode(rb_root->right_), 5, Color::Black);
+  checkNode(tree.GetRBNode(rb_root->right_->left_), 4, Color::Black);
+  checkNode(tree.GetRBNode(rb_root->right_->right_), 7, Color::Red);
+  checkNode(tree.GetRBNode(rb_root->right_->right_->left_), 6, Color::Black);
+  checkNode(tree.GetRBNode(rb_root->right_->right_->right_), 8, Color::Black);
+  checkNode(tree.GetRBNode(rb_root->right_->right_->right_->right_), 9,
+            Color::Red);
+
+  EXPECT_EQ(tree.size(), 10);
 }
 
 } // namespace bstree::test

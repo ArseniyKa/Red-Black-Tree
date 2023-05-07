@@ -31,6 +31,8 @@ public:
 
   Node<T, M> *end_node_{nullptr};
 
+  [[nodsicard]] Node<T, M> *root() const;
+
 protected:
   void SubInsert(T key, M value, Node<T, M> *&node, Node<T, M> *parent);
 
@@ -57,7 +59,8 @@ protected:
 
   void SubTranverse(Node<T, M> *node);
 
-  void CheckNode(Node<T, M> *node, const std::string &error_message) const;
+  void CheckNode(Node<T, M> *node, const std::string &function_name,
+                 const std::string &node_name) const;
 
   std::int64_t size_{0};
   Node<T, M> *root_{nullptr};

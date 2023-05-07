@@ -1,6 +1,8 @@
 #include "BinaryTree.h"
 #include <iostream>
 
+#define GETNAME(var) #var
+
 template <typename T, typename M> BinaryTree<T, M>::BinaryTree() {
   //  qDebug() << "BinaryTree constructor was called";
 }
@@ -263,9 +265,12 @@ void BinaryTree<T, M>::SubTranverse(Node<T, M> *node) {
 
 template <typename T, typename M>
 void BinaryTree<T, M>::CheckNode(Node<T, M> *node,
-                                 const std::string &error_message) const {
+                                 const std::string &function_name,
+                                 const std::string &node_name) const {
+
   if (node == nullptr) {
-    throw std::runtime_error(error_message);
+    throw std::runtime_error("Error in " + function_name + "(): " + node_name +
+                             " is nullptr");
   }
 }
 
@@ -288,6 +293,11 @@ BinaryTreeIterator<T, M, BinaryTree<T, M>> BinaryTree<T, M>::end() {
 
   BinaryTreeIterator<T, M, BinaryTree<T, M>> iter(this, end_node_);
   return iter;
+}
+
+template <typename T, typename M> Node<T, M> *BinaryTree<T, M>::root() const {
+  CheckNode(root_, __func__, "root");
+  return root_;
 }
 
 // explicit instantiation
