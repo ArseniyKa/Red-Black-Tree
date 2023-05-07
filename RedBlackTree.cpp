@@ -15,7 +15,7 @@ bool RedBlackTree<T, M>::IsLeftSideOfNode(Node<T, M> *node) {
     throw std::runtime_error("error in IsLeftSide. Node is nullptr");
   }
 
-  if (node->value_ == this->root_->value_) {
+  if (node->key_ == this->root_->key_) {
     throw std::runtime_error("error in IsLeftSide. root doesn't have parent");
   }
 
@@ -57,10 +57,16 @@ void RedBlackTree<T, M>::LeftRotation(Node<T, M> *X) {
   auto *beta = Y->left_;
   auto *parent = X->parent_; // upper parent of X, not see in the picture
 
-  // init upper parent - Y
-  bool node_is_left = IsLeftSideOfNode(X);
+  if (X->key_ != this->root_->key_) {
+    // init upper parent - Y
+    bool node_is_left = IsLeftSideOfNode(X);
+    node_is_left ? CreateLeftEdge(parent, Y) : CreateRightEdge(parent, Y);
+  } else {
+    this->root_ = Y;
+    Y->parent_ = nullptr;
+  }
 
-  if (this->size_ < 3 || X == nullptr || Y == nullptr || parent == nullptr) {
+  if (this->size_ < 3 || X == nullptr || Y == nullptr) {
     throw std::runtime_error("error in LeftRotation");
   }
   // init X - beta
@@ -68,8 +74,6 @@ void RedBlackTree<T, M>::LeftRotation(Node<T, M> *X) {
 
   // init X - Y
   CreateLeftEdge(Y, X);
-
-  node_is_left ? CreateLeftEdge(parent, Y) : CreateRightEdge(parent, Y);
 }
 
 //======================================
@@ -107,7 +111,8 @@ void RedBlackTree<T, M>::RightRotation(Node<T, M> *X) {
 
 template <typename T, typename M>
 void RedBlackTree<T, M>::recolor(RBNode<T, M> *node) {
-  if (node == nullptr || node->parent_ == nullptr) {
+  if (node == nullptr ||
+      (node->parent_ == nullptr && node->key_ != this->root_->key_)) {
     throw std::runtime_error("Error in recolor()");
   }
 
@@ -117,7 +122,8 @@ void RedBlackTree<T, M>::recolor(RBNode<T, M> *node) {
         "Error in recolor(): color was previously undefined");
   }
 
-  if (node->value_ == this->root_->value_) {
+  if (node->key_ == this->root_->key_) {
+    node->color_ = Color::Black;
     return;
   }
 
@@ -210,13 +216,6 @@ RBNode<T, M> *RedBlackTree<T, M>::GetUncle(Node<T, M> *node) {
 }
 
 template <typename T, typename M>
-Color RedBlackTree<T, M>::GetColor(Node<T, M> *node) const {
-  this->CheckNode(node, "Error in GetColor(): node is nullptr");
-  auto *rb_node = GetRBNode(node);
-  return rb_node->color_;
-}
-
-template <typename T, typename M>
 RBNode<T, M> *RedBlackTree<T, M>::GetRBNode(Node<T, M> *node) const {
   this->CheckNode(node, "Error in GetRBNode() method, node is nullptr");
   return dynamic_cast<RBNode<T, M> *>(node);
@@ -239,6 +238,12 @@ void RedBlackTree<T, M>::RedParentRedUncleCase(RBNode<T, M> *node) {
   recolor(uncle);
   if (grandfather->value_ != this->root_->value_) {
     recolor(grandfather);
+    //    auto rb_grandfather = GetRBNode(grandfather);
+    auto rb_grandfather_father = GetRBNode(grandfather->parent_);
+    // проделать первые шаги для дедушки если его отец красный и он красный
+    if (rb_grandfather_father->color_ == Color::Red) {
+      RedParentCase(grandfather);
+    }
   }
 }
 
@@ -330,3 +335,4 @@ void RedBlackTree<T, M>::RedParentCase(RBNode<T, M> *node) {
 
 // explicit instantiation
 template class RedBlackTree<int, std::string>;
+template class RedBlackTree<int, int>;

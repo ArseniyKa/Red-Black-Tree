@@ -12,14 +12,15 @@ class RedBlackTreeTest : public testing::Test {
 protected:
   RedBlackTreeTest() = default;
 
-  void checkTreeNodes(RedBlackTree<int, std::string> &tree,
-                      std::vector<std::pair<int, Color>> &answers) {
+  template <typename T, typename M>
+  void checkTreeNodes(RedBlackTree<T, M> &tree,
+                      std::vector<std::pair<T, Color>> &answers) {
 
     int index = 0;
     for (auto elem : tree) {
       auto key = elem.first;
       auto *node = tree.find(key);
-      auto *rb_node = dynamic_cast<RBNode<int, std::string> *>(node);
+      auto *rb_node = dynamic_cast<RBNode<T, M> *>(node);
       auto color = rb_node->color_;
 
       EXPECT_EQ(key, answers[index].first);
@@ -294,7 +295,7 @@ TEST_F(RedBlackTreeTest, insert_RedParentRedUncle_Test) { // NOLINTleft_
 
 // see the link : https
 //    : // algorithmtutor.com/Data-Structures/Tree/Red-Black-Trees/
-TEST_F(RedBlackTreeTest, insert_RightParentRightNodeCase_Test) { // NOLINTleft_
+TEST_F(RedBlackTreeTest, insert_RightParentRightNodeCase_Test) {
   RedBlackTree<int, std::string> tree;
 
   tree.insert(61, "root");
@@ -326,7 +327,7 @@ TEST_F(RedBlackTreeTest, insert_RightParentRightNodeCase_Test) { // NOLINTleft_
 
 // see the link : https: //
 // algorithmtutor.com/Data-Structures/Tree/Red-Black-Trees/
-TEST_F(RedBlackTreeTest, insert_RightParentLeftNodeCase_Test) { // NOLINTleft_
+TEST_F(RedBlackTreeTest, insert_RightParentLeftNodeCase_Test) {
   RedBlackTree<int, std::string> tree;
 
   tree.insert(61, "root");
@@ -375,9 +376,9 @@ TEST_F(RedBlackTreeTest,
   checkTreeNodes(tree, answers);
 }
 
-// see the link:https://algorithmtutor.com/Data-Structures/Tree/Red-Black-Trees/
-TEST_F(RedBlackTreeTest,
-       insert_LeftParentRightNodeCase_Test) { // NOLINTleft_
+// see the
+// link : https : // algorithmtutor.com/Data-Structures/Tree/Red-Black-Trees/
+TEST_F(RedBlackTreeTest, insert_LeftParentRightNodeCase_Test) {
   RedBlackTree<int, std::string> tree;
 
   tree.insert(61, "root");
@@ -393,6 +394,23 @@ TEST_F(RedBlackTreeTest,
                                                 {75, Color::Red},
                                                 {79, Color::Black},
                                                 {85, Color::Red}};
+
+  checkTreeNodes(tree, answers);
+}
+
+TEST_F(RedBlackTreeTest,
+       insert_Linear_Subsequence_Test) { // NOLINTleft_
+  RedBlackTree<int, int> tree;
+
+  for (int i = 0; i < 10; i++) {
+    tree.insert(i, i);
+  }
+
+  std::vector<std::pair<int, Color>> answers = {
+      {0, Color::Black}, {1, Color::Black}, {2, Color::Black},
+      {3, Color::Black}, {4, Color::Black}, {5, Color::Black},
+      {6, Color::Black}, {7, Color::Red},   {8, Color::Black},
+      {9, Color::Red}};
 
   checkTreeNodes(tree, answers);
 }

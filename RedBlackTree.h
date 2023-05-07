@@ -25,8 +25,6 @@ public:
 
   RBNode<T, M> *GetUncle(Node<T, M> *node);
 
-  [[nodiscard]] Color GetColor(Node<T, M> *node) const;
-
 private:
   void CreateLeftEdge(Node<T, M> *upper_node, Node<T, M> *lower_node);
 

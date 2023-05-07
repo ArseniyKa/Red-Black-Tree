@@ -293,3 +293,4 @@ BinaryTreeIterator<T, M, BinaryTree<T, M>> BinaryTree<T, M>::end() {
 // explicit instantiation
 template class BinaryTree<int, char>;
 template class BinaryTree<int, std::string>;
+template class BinaryTree<int, int>;
