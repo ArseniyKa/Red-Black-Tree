@@ -147,19 +147,13 @@ void BinaryTree<T, M>::AllLeavesEmptyCase(Node<T, M> *&node) {
 
 template <typename T, typename M>
 void BinaryTree<T, M>::RightLeafEmptyCase(Node<T, M> *&node) {
-  auto *parent = node->parent_;
-  auto *left_child = node->left_;
-
-  auto parent_key = parent->key_;
-  auto key = node->key_;
-  //  bool is_left_child =
-  if (key < parent_key) {
-    parent->left_ = left_child;
-  } else {
-    parent->right_ = left_child;
+  if (node->right_ != nullptr) {
+    ErrorMessage("Error in RightLeafEmptyCase(): Right leaf should be nullptr");
   }
 
-  left_child->parent_ = parent;
+  auto *left_child = node->left_;
+  ReasignParentChild(node, left_child);
+
   delete node;
   size_--;
 }
@@ -182,17 +176,9 @@ void BinaryTree<T, M>::RightChildCase(Node<T, M> *&node) {
 template <typename T, typename M>
 void BinaryTree<T, M>::LeftGrandsonNull(Node<T, M> *&node) {
   auto *parent = node->parent_;
-  auto parent_key = parent->key_;
-  auto key = node->key_;
   auto *right_child = node->right_;
 
-  if (key < parent_key) {
-    parent->left_ = right_child;
-  } else {
-    parent->right_ = right_child;
-  }
-
-  right_child->parent_ = parent;
+  ReasignParentChild(node, right_child);
 
   auto *left_child = node->left_;
   right_child->left_ = left_child;
@@ -273,6 +259,20 @@ void BinaryTree<T, M>::CheckNode(Node<T, M> *node,
     throw std::runtime_error("Error in " + function_name + "(): " + node_name +
                              " is nullptr");
   }
+}
+
+template <typename T, typename M>
+void BinaryTree<T, M>::ReasignParentChild(Node<T, M> *old_child,
+                                          Node<T, M> *new_child) {
+  CheckNode(old_child, __func__, "old_child");
+  CheckNode(new_child, __func__, "new_child");
+  auto *parent = old_child->parent_;
+  CheckNode(parent, __func__, "parent");
+
+  bool is_left_child = IsLeftSideOfNode(old_child);
+  is_left_child ? parent->left_ = new_child : parent->right_ = new_child;
+
+  new_child->parent_ = parent;
 }
 
 template <typename T, typename M>

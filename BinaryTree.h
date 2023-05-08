@@ -66,6 +66,8 @@ protected:
   void CheckNode(Node<T, M> *node, const std::string &function_name,
                  const std::string &node_name) const;
 
+  void ReasignParentChild(Node<T, M> *old_child, Node<T, M> * new_child);
+
   std::int64_t size_{0};
   Node<T, M> *root_{nullptr};
 };
