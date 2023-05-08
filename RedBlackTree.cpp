@@ -27,34 +27,6 @@ void RedBlackTree<T, M>::insert(T key, M value) {
   }
 }
 
-template <typename T, typename M>
-bool RedBlackTree<T, M>::IsLeftSideOfNode(Node<T, M> *node) {
-
-  this->CheckNode(node, __func__, "node");
-
-  if (node->key_ == this->root_->key_) {
-    ErrorMessage("Error in IsLeftSideOfNode():  node = root");
-  }
-
-  auto *parent = node->parent_;
-  this->CheckNode(parent, __func__, "parent");
-
-  auto *left_parent_child = parent->left_;
-  auto *right_parent_child = parent->right_;
-
-  auto key = node->key_;
-
-  if (left_parent_child != nullptr && key == left_parent_child->key_) {
-    return true;
-  } else if (right_parent_child != nullptr && key == right_parent_child->key_) {
-    return false;
-  } else {
-    ErrorMessage("Error in IsLeftSideOfNode(): No one accepted condition");
-  }
-
-  return false;
-}
-
 //======================================
 ///@brief before left rotation:
 //                 X
@@ -74,7 +46,7 @@ void RedBlackTree<T, M>::LeftRotation(Node<T, M> *X) {
 
   if (X->key_ != this->root_->key_) {
     // init upper parent - Y
-    bool node_is_left = IsLeftSideOfNode(X);
+    bool node_is_left = this->IsLeftSideOfNode(X);
     node_is_left ? CreateLeftEdge(parent, Y) : CreateRightEdge(parent, Y);
   } else {
     this->root_ = Y;
@@ -82,7 +54,7 @@ void RedBlackTree<T, M>::LeftRotation(Node<T, M> *X) {
   }
 
   if (this->size_ < 3 || X == nullptr || Y == nullptr) {
-    ErrorMessage("Error in LeftRotation()");
+    this->ErrorMessage("Error in LeftRotation()");
   }
   // init X - beta
   CreateRightEdge(X, beta);
@@ -110,10 +82,10 @@ void RedBlackTree<T, M>::RightRotation(Node<T, M> *X) {
   auto *parent = Y->parent_; // upper parent of Y
 
   // init upper parent - X
-  bool node_is_left = IsLeftSideOfNode(Y);
+  bool node_is_left = this->IsLeftSideOfNode(Y);
 
   if (this->size_ < 3 || X == nullptr || Y == nullptr || parent == nullptr) {
-    ErrorMessage("Error in RightRotation()");
+    this->ErrorMessage("Error in RightRotation()");
   }
   // init X - Y
   CreateRightEdge(X, Y);
@@ -128,7 +100,7 @@ template <typename T, typename M>
 void RedBlackTree<T, M>::recolor(RBNode<T, M> *node) {
   if (node == nullptr ||
       (node->parent_ == nullptr && node->key_ != this->root_->key_)) {
-    ErrorMessage("Error in recolor()");
+    this->ErrorMessage("Error in recolor()");
   }
 
   auto color = node->color_;
@@ -168,7 +140,7 @@ void RedBlackTree<T, M>::CreateRightEdge(Node<T, M> *upper_node,
 template <typename T, typename M>
 void RedBlackTree<T, M>::TreeEmtyCase(T key, M value) {
   if (this->size_ != 1 || this->root_ == nullptr) {
-    ErrorMessage("Error in TreeEmtyCase()");
+    this->ErrorMessage("Error in TreeEmtyCase()");
   }
 
   auto rb_node = dynamic_cast<RBNode<T, M> *>(this->root_);
@@ -180,7 +152,7 @@ void RedBlackTree<T, M>::CreateNewNode(T key, M value, Node<T, M> *&node,
                                        Node<T, M> *parent) {
 
   if (node != nullptr) {
-    ErrorMessage("Error in CreateNewNode(): node should be nullptr");
+    this->ErrorMessage("Error in CreateNewNode(): node should be nullptr");
   }
 
   node = new RBNode<T, M>;
@@ -245,8 +217,8 @@ void RedBlackTree<T, M>::RedParentBlackUncleCase(RBNode<T, M> *node) {
   this->CheckNode(node, __func__, "node");
   auto *uncle = GetUncle(node);
   auto *parent = GetRBNode(node->parent_);
-  bool is_parent_right = !IsLeftSideOfNode(parent);
-  bool is_node_right = !IsLeftSideOfNode(node);
+  bool is_parent_right = !this->IsLeftSideOfNode(parent);
+  bool is_node_right = !this->IsLeftSideOfNode(node);
   if (is_parent_right && is_node_right) {
     RightParentRightNodeCase(node);
   } else if (is_parent_right && !is_node_right) {
@@ -304,11 +276,6 @@ void RedBlackTree<T, M>::LeftParentRightNodeCase(RBNode<T, M> *node) {
 }
 
 template <typename T, typename M>
-void RedBlackTree<T, M>::ErrorMessage(const std::string &message) const {
-  throw std::runtime_error(message);
-}
-
-template <typename T, typename M>
 void RedBlackTree<T, M>::CheckColor(const Color color) {
   if (color == Color::Undefined) {
     throw std::runtime_error(
@@ -327,7 +294,7 @@ void RedBlackTree<T, M>::RedParentCase(RBNode<T, M> *node) {
   } else if (uncle == nullptr || uncle->color_ == Color::Black) {
     RedParentBlackUncleCase(node);
   } else {
-    ErrorMessage("Error in RedParentCase()");
+    this->ErrorMessage("Error in RedParentCase()");
   }
 }
 

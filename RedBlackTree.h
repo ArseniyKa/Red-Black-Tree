@@ -14,8 +14,6 @@ public:
   RedBlackTree();
   ~RedBlackTree();
 
-  bool IsLeftSideOfNode(Node<T, M> *node);
-
   void LeftRotation(Node<T, M> *node);
   void RightRotation(Node<T, M> *node);
 
@@ -26,6 +24,7 @@ public:
   RBNode<T, M> *GetUncle(Node<T, M> *node);
 
   RBNode<T, M> *GetRBNode(Node<T, M> *node) const;
+
 private:
   void CreateLeftEdge(Node<T, M> *upper_node, Node<T, M> *lower_node);
 
@@ -35,7 +34,6 @@ private:
 
   void CreateNewNode(T key, M value, Node<T, M> *&node,
                      Node<T, M> *parent) override;
-
 
   void RedParentCase(RBNode<T, M> *node);
 
@@ -47,7 +45,6 @@ private:
   void LeftParentLeftNodeCase(RBNode<T, M> *node);
   void LeftParentRightNodeCase(RBNode<T, M> *node);
 
-  void ErrorMessage(const std::string &message) const;
   void CheckColor(const Color color);
 };
 

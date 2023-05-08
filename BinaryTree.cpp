@@ -152,6 +152,7 @@ void BinaryTree<T, M>::RightLeafEmptyCase(Node<T, M> *&node) {
 
   auto parent_key = parent->key_;
   auto key = node->key_;
+  //  bool is_left_child =
   if (key < parent_key) {
     parent->left_ = left_child;
   } else {
@@ -298,6 +299,40 @@ BinaryTreeIterator<T, M, BinaryTree<T, M>> BinaryTree<T, M>::end() {
 template <typename T, typename M> Node<T, M> *BinaryTree<T, M>::root() const {
   CheckNode(root_, __func__, "root");
   return root_;
+}
+
+template <typename T, typename M>
+void BinaryTree<T, M>::ErrorMessage(const std::string &message) const {
+  throw std::runtime_error(message);
+}
+
+template <typename T, typename M>
+bool BinaryTree<T, M>::IsLeftSideOfNode(Node<T, M> *node) const {
+
+  this->CheckNode(node, __func__, "node");
+
+  if (node->key_ == this->root_->key_) {
+    this->ErrorMessage("Error in IsLeftSideOfNode():  node = root");
+  }
+
+  auto *parent = node->parent_;
+  this->CheckNode(parent, __func__, "parent");
+
+  auto *left_parent_child = parent->left_;
+  auto *right_parent_child = parent->right_;
+
+  auto key = node->key_;
+
+  if (left_parent_child != nullptr && key == left_parent_child->key_) {
+    return true;
+  } else if (right_parent_child != nullptr && key == right_parent_child->key_) {
+    return false;
+  } else {
+    this->ErrorMessage(
+        "Error in IsLeftSideOfNode(): No one accepted condition");
+  }
+
+  return false;
 }
 
 // explicit instantiation
