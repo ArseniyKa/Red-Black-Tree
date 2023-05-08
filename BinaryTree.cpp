@@ -51,10 +51,8 @@ template <typename T, typename M> Node<T, M> *&BinaryTree<T, M>::find(T key) {
     return SubFind(key, root_->left_);
   } else if (key > root_->key_) {
     return SubFind(key, root_->right_);
-  } else if (key == root_->key_) {
-    return root_;
   } else {
-    throw std::runtime_error("undefined behavior in find()");
+    return root_;
   }
 }
 

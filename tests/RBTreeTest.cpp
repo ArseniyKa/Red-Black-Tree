@@ -426,6 +426,7 @@ TEST_F(RedBlackTreeTest,
   checkNode(rb_root, 3, Color::Black);
   checkNode(tree.GetRBNode(rb_root->left_), 1, Color::Black);
   checkNode(tree.GetRBNode(rb_root->left_->left_), 0, Color::Black);
+  checkNode(tree.GetRBNode(rb_root->left_->right_), 2, Color::Black);
   checkNode(tree.GetRBNode(rb_root->right_), 5, Color::Black);
   checkNode(tree.GetRBNode(rb_root->right_->left_), 4, Color::Black);
   checkNode(tree.GetRBNode(rb_root->right_->right_), 7, Color::Red);
