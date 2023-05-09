@@ -13,12 +13,12 @@ protected:
 
   // clang-format off
   //                               root
-  //                  left_sub_root     right_sub_root
-  //          left_sub_sub_root                           parent
+  //                left_sub_root        right_sub_root
+  //    left_sub_sub_root                                 parent
   //                                                                 X
-  //                                                      alpha                Y
-  //                                                 alpha2                beta        gamma
-  //                                          alpha3                  beta2                gamma2
+  //                                                     alpha                    Y
+  //                                                alpha2                 beta        gamma
+  //                                         alpha3                    beta2               gamma2
   //
   //
   //
@@ -156,13 +156,42 @@ TEST_F(BinarySearchTest,
   auto *root = tree.root();
   EXPECT_EQ(tree.size(), 14);
 
-  tree.remove(82);
+  tree.remove(89);
   checkNode(root, 33, std::string("root"));
   checkNode(root->left_, 13, std::string("left_sub_root"));
   checkNode(root->left_->left_, 10, std::string("left_sub_sub_root"));
   checkNode(root->right_, 34, std::string("right_sub_root"));
   checkNode(root->right_->right_, 37, std::string("parent"));
   checkNode(root->right_->right_->right_, 50, std::string("X"));
+  checkNode(root->right_->right_->right_->left_, 47, std::string("alpha"));
+  checkNode(root->right_->right_->right_->left_->left_, 45,
+            std::string("alpha2"));
+  checkNode(root->right_->right_->right_->left_->left_->left_, 43,
+            std::string("alpha3"));
+  checkNode(root->right_->right_->right_->right_, 92, std::string("gamma"));
+  checkNode(root->right_->right_->right_->right_->right_, 99,
+            std::string("gamma2"));
+  checkNode(root->right_->right_->right_->right_->left_, 84,
+            std::string("beta"));
+  checkNode(root->right_->right_->right_->right_->left_->left_, 82,
+            std::string("beta2"));
+
+  EXPECT_EQ(tree.size(), 13);
+}
+
+TEST_F(BinarySearchTest,
+       remove_RightChildCase_LeftGrandsonNotNull_Test) { // NOLINT
+  auto tree = stringTree();
+  auto *root = tree.root();
+  EXPECT_EQ(tree.size(), 14);
+
+  tree.remove(50);
+  checkNode(root, 33, std::string("root"));
+  checkNode(root->left_, 13, std::string("left_sub_root"));
+  checkNode(root->left_->left_, 10, std::string("left_sub_sub_root"));
+  checkNode(root->right_, 34, std::string("right_sub_root"));
+  checkNode(root->right_->right_, 37, std::string("parent"));
+  checkNode(root->right_->right_->right_, 82, std::string("beta2"));
   checkNode(root->right_->right_->right_->left_, 47, std::string("alpha"));
   checkNode(root->right_->right_->right_->left_->left_, 45,
             std::string("alpha2"));

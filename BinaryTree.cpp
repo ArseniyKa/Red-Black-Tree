@@ -189,28 +189,18 @@ void BinaryTree<T, M>::LeftGrandsonNull(Node<T, M> *&node) {
 
 template <typename T, typename M>
 void BinaryTree<T, M>::LeftGrandsonNotNull(Node<T, M> *&node) {
-  auto *parent = node->parent_;
-  auto parent_key = parent->key_;
-  auto key = node->key_;
   auto *right_child = node->right_;
+  CheckNode(right_child, __func__, "right_child");
   auto *right_grandson = right_child->right_;
+  CheckNode(right_grandson, __func__, "right_grandson");
 
   auto min_child = FindMinimalSubTreeChild(right_child);
-  if (key < parent_key) {
-    parent->left_ = min_child;
-  } else {
-    parent->right_ = min_child;
-  }
-
   min_child->parent_->left_ = nullptr;
-  min_child->parent_ = parent;
+  ReasignParentChild(node, min_child);
 
   auto *left_child = node->left_;
-  min_child->left_ = left_child;
-  left_child->parent_ = min_child;
-
-  min_child->right_ = right_child;
-  right_child->parent_ = min_child;
+  CreateLeftEdge(min_child, left_child);
+  CreateRightEdge(min_child, right_child);
 }
 
 template <typename T, typename M>
