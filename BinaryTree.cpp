@@ -176,11 +176,15 @@ void BinaryTree<T, M>::LeftGrandsonNull(Node<T, M> *&node) {
   auto *parent = node->parent_;
   auto *right_child = node->right_;
 
+  if (right_child->left_ != nullptr) {
+    ErrorMessage(
+        "Error in LeftGrandsonNull(): left grandson should be nullptr");
+  }
+
   ReasignParentChild(node, right_child);
 
   auto *left_child = node->left_;
-  right_child->left_ = left_child;
-  left_child->parent_ = right_child;
+  this->CreateLeftEdge(right_child, left_child);
 }
 
 template <typename T, typename M>
@@ -246,6 +250,30 @@ void BinaryTree<T, M>::SubTranverse(Node<T, M> *node) {
   SubTranverse(node->left_);
   std::cout << node->key_ << "   " << node->value_ << "\n";
   SubTranverse(node->right_);
+}
+
+template <typename T, typename M>
+void BinaryTree<T, M>::CreateLeftEdge(Node<T, M> *upper_node,
+                                      Node<T, M> *lower_node) {
+  CheckNode(upper_node, __func__, "upper_node");
+  if (lower_node == nullptr) {
+    upper_node->left_ = nullptr;
+    return;
+  }
+  upper_node->left_ = lower_node;
+  lower_node->parent_ = upper_node;
+}
+
+template <typename T, typename M>
+void BinaryTree<T, M>::CreateRightEdge(Node<T, M> *upper_node,
+                                       Node<T, M> *lower_node) {
+  CheckNode(upper_node, __func__, "upper_node");
+  if (lower_node == nullptr) {
+    upper_node->right_ = nullptr;
+    return;
+  }
+  upper_node->right_ = lower_node;
+  lower_node->parent_ = upper_node;
 }
 
 template <typename T, typename M>

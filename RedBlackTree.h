@@ -26,10 +26,6 @@ public:
   RBNode<T, M> *GetRBNode(Node<T, M> *node) const;
 
 private:
-  void CreateLeftEdge(Node<T, M> *upper_node, Node<T, M> *lower_node);
-
-  void CreateRightEdge(Node<T, M> *upper_node, Node<T, M> *lower_node);
-
   void TreeEmtyCase(T key, M value);
 
   void CreateNewNode(T key, M value, Node<T, M> *&node,

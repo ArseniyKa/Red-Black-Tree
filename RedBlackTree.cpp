@@ -47,7 +47,8 @@ void RedBlackTree<T, M>::LeftRotation(Node<T, M> *X) {
   if (X->key_ != this->root_->key_) {
     // init upper parent - Y
     bool node_is_left = this->IsLeftSideOfNode(X);
-    node_is_left ? CreateLeftEdge(parent, Y) : CreateRightEdge(parent, Y);
+    node_is_left ? this->CreateLeftEdge(parent, Y)
+                 : this->CreateRightEdge(parent, Y);
   } else {
     this->root_ = Y;
     Y->parent_ = nullptr;
@@ -57,10 +58,10 @@ void RedBlackTree<T, M>::LeftRotation(Node<T, M> *X) {
     this->ErrorMessage("Error in LeftRotation()");
   }
   // init X - beta
-  CreateRightEdge(X, beta);
+  this->CreateRightEdge(X, beta);
 
   // init X - Y
-  CreateLeftEdge(Y, X);
+  this->CreateLeftEdge(Y, X);
 }
 
 //======================================
@@ -88,12 +89,13 @@ void RedBlackTree<T, M>::RightRotation(Node<T, M> *X) {
     this->ErrorMessage("Error in RightRotation()");
   }
   // init X - Y
-  CreateRightEdge(X, Y);
+  this->CreateRightEdge(X, Y);
 
   // init Y - beta
-  CreateLeftEdge(Y, beta);
+  this->CreateLeftEdge(Y, beta);
 
-  node_is_left ? CreateLeftEdge(parent, X) : CreateRightEdge(parent, X);
+  node_is_left ? this->CreateLeftEdge(parent, X)
+               : this->CreateRightEdge(parent, X);
 }
 
 template <typename T, typename M>
@@ -113,28 +115,6 @@ void RedBlackTree<T, M>::recolor(RBNode<T, M> *node) {
 
   bool is_black_color = color == Color::Black;
   node->color_ = is_black_color ? Color::Red : Color::Black;
-}
-
-template <typename T, typename M>
-void RedBlackTree<T, M>::CreateLeftEdge(Node<T, M> *upper_node,
-                                        Node<T, M> *lower_node) {
-  if (lower_node == nullptr) {
-    upper_node->left_ = nullptr;
-    return;
-  }
-  upper_node->left_ = lower_node;
-  lower_node->parent_ = upper_node;
-}
-
-template <typename T, typename M>
-void RedBlackTree<T, M>::CreateRightEdge(Node<T, M> *upper_node,
-                                         Node<T, M> *lower_node) {
-  if (lower_node == nullptr) {
-    upper_node->right_ = nullptr;
-    return;
-  }
-  upper_node->right_ = lower_node;
-  lower_node->parent_ = upper_node;
 }
 
 template <typename T, typename M>

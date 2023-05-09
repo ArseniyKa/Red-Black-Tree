@@ -61,12 +61,16 @@ protected:
 
   Node<T, M> *FindLastTreeNode(Node<T, M> *node);
 
+  void CreateLeftEdge(Node<T, M> *upper_node, Node<T, M> *lower_node);
+
+  void CreateRightEdge(Node<T, M> *upper_node, Node<T, M> *lower_node);
+
   void SubTranverse(Node<T, M> *node);
 
   void CheckNode(Node<T, M> *node, const std::string &function_name,
                  const std::string &node_name) const;
 
-  void ReasignParentChild(Node<T, M> *old_child, Node<T, M> * new_child);
+  void ReasignParentChild(Node<T, M> *old_child, Node<T, M> *new_child);
 
   std::int64_t size_{0};
   Node<T, M> *root_{nullptr};

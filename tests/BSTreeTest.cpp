@@ -11,6 +11,18 @@ class BinarySearchTest : public testing::Test {
 protected:
   BinarySearchTest() = default;
 
+  // clang-format off
+  //                               root
+  //                  left_sub_root     right_sub_root
+  //          left_sub_sub_root                           parent
+  //                                                                 X
+  //                                                      alpha                Y
+  //                                                 alpha2                beta        gamma
+  //                                          alpha3                  beta2                gamma2
+  //
+  //
+  //
+  // clang-format on
   BinaryTree<int, std::string> stringTree() {
     BinaryTree<int, std::string> tree;
 
