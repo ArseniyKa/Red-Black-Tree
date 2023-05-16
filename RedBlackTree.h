@@ -21,6 +21,8 @@ public:
 
   void insert(T key, M value) override;
 
+  void remove(T key) override;
+
   RBNode<T, M> *GetUncle(Node<T, M> *node);
 
   RBNode<T, M> *GetRBNode(Node<T, M> *node) const;
@@ -42,6 +44,12 @@ private:
   void LeftParentRightNodeCase(RBNode<T, M> *node);
 
   void CheckColor(const Color color);
+
+  void ZeroLeavesRemoveCase_new(Node<T, M> *&node);
+  void OneLeafRemoveCase(Node<T, M> *&node);
+  void TwoLeavesRemoveCase(Node<T, M> *&node);
+
+
 };
 
 #endif // REDBLACKTREE_H

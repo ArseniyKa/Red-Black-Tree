@@ -8,6 +8,13 @@ if(NOT DEFINED CMAKE_CXX_COMPILER)
   set(CMAKE_CXX_COMPILER "clang++")
 endif()
 
+if(NOT DEFINED CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE "Release")
+endif()
+
+message("Build type is ${CMAKE_BUILD_TYPE}")
+message("======================================")
+
 project(RBTree LANGUAGES CXX)
 
 set(CMAKE_AUTOUIC ON)

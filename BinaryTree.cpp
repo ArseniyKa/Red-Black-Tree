@@ -58,16 +58,17 @@ template <typename T, typename M> Node<T, M> *&BinaryTree<T, M>::find(T key) {
 
 template <typename T, typename M> void BinaryTree<T, M>::remove(T key) {
   auto *node = find(key);
-  auto *parent = node->parent_;
+  Node<T, M> *deleted_node = nullptr;
   if (node->left_ == nullptr && node->right_ == nullptr) {
-    AllLeavesEmptyCase(node);
-  } else if (node->right_ == nullptr) {
-    RightLeafEmptyCase(node);
-  } else if (node->right_ != nullptr) {
-    RightChildCase(node);
+    deleted_node = AllLeavesEmptyCase(node);
+  } else if (node->left_ != nullptr && node->right_ != nullptr) {
+    deleted_node = AllLeavesCase(node);
   } else {
-    throw std::runtime_error("undefined behavior in remove()");
+    deleted_node = OneLeafEmptyCase(node);
   }
+
+  delete deleted_node;
+  size_--;
 }
 
 template <typename T, typename M> void BinaryTree<T, M>::traverse() {
@@ -124,83 +125,49 @@ void BinaryTree<T, M>::CreateNewNode(T key, M value, Node<T, M> *&node,
 }
 
 template <typename T, typename M>
-void BinaryTree<T, M>::NullParentLeaf(T key, Node<T, M> *parent) {
-  if (parent->left_ != nullptr && key == parent->left_->key_) {
-    parent->left_ = nullptr;
-  } else if (parent->right_ != nullptr && key == parent->right_->key_) {
-    parent->right_ = nullptr;
-  } else {
-    throw std::runtime_error("NullChildPointer error");
-  }
-}
+Node<T, M> *BinaryTree<T, M>::AllLeavesEmptyCase(Node<T, M> *&node) {
+  CheckNode(node, __func__, "node");
 
-template <typename T, typename M>
-void BinaryTree<T, M>::AllLeavesEmptyCase(Node<T, M> *&node) {
-  auto key = node->key_;
   auto *parent = node->parent_;
-  NullParentLeaf(key, parent);
-  delete node;
-  size_--;
+  bool is_left_node = this->IsLeftSideOfNode(node);
+  is_left_node ? parent->left_ = nullptr : parent->right_ = nullptr;
+  return node;
 }
 
 template <typename T, typename M>
-void BinaryTree<T, M>::RightLeafEmptyCase(Node<T, M> *&node) {
-  if (node->right_ != nullptr) {
-    ErrorMessage("Error in RightLeafEmptyCase(): Right leaf should be nullptr");
-  }
-
-  auto *left_child = node->left_;
-  ReasignParentChild(node, left_child);
-
-  delete node;
-  size_--;
-}
-
-template <typename T, typename M>
-void BinaryTree<T, M>::RightChildCase(Node<T, M> *&node) {
-  auto *right_child = node->right_;
-  auto *left_grandson = right_child->left_;
-
-  if (left_grandson == nullptr) {
-    LeftGrandsonNull(node);
-  } else {
-    LeftGrandsonNotNull(node);
-  }
-
-  delete node;
-  size_--;
-}
-
-template <typename T, typename M>
-void BinaryTree<T, M>::LeftGrandsonNull(Node<T, M> *&node) {
-  auto *parent = node->parent_;
-  auto *right_child = node->right_;
-
-  if (right_child->left_ != nullptr) {
+Node<T, M> *BinaryTree<T, M>::OneLeafEmptyCase(Node<T, M> *&node) {
+  bool is_child_left = node->left_ != nullptr;
+  if (is_child_left && node->right_ != nullptr) {
+    ErrorMessage("error in OneLeafEmptyCase: right leaf should be nullptr");
+  } else if (!is_child_left && node->left_ != nullptr) {
+    ErrorMessage("error in OneLeafEmptyCase: left leaf should be nullptr");
+  } else if (node->left_ == nullptr && node->right_ == nullptr) {
     ErrorMessage(
-        "Error in LeftGrandsonNull(): left grandson should be nullptr");
+        "error in OneLeafEmptyCase: one of the leaft shouldn't be nullptr");
   }
 
-  ReasignParentChild(node, right_child);
-
-  auto *left_child = node->left_;
-  this->CreateLeftEdge(right_child, left_child);
+  auto *child = is_child_left ? node->left_ : node->right_;
+  ReasignParentChild(node, child);
+  return node;
 }
 
 template <typename T, typename M>
-void BinaryTree<T, M>::LeftGrandsonNotNull(Node<T, M> *&node) {
-  auto *right_child = node->right_;
-  CheckNode(right_child, __func__, "right_child");
-  auto *right_grandson = right_child->right_;
-  CheckNode(right_grandson, __func__, "right_grandson");
+Node<T, M> *BinaryTree<T, M>::AllLeavesCase(Node<T, M> *&node) {
 
-  auto min_child = FindMinimalSubTreeChild(right_child);
-  min_child->parent_->left_ = nullptr;
-  ReasignParentChild(node, min_child);
+  CheckNode(node->left_, __func__, "left child");
+  CheckNode(node->right_, __func__, "right child");
 
-  auto *left_child = node->left_;
-  CreateLeftEdge(min_child, left_child);
-  CreateRightEdge(min_child, right_child);
+  auto *min_child = FindMinimalSubTreeChild(node->right_);
+  CopySuccessor(node, min_child);
+
+  if (min_child->left_ != nullptr && min_child->right_ != nullptr) {
+    ErrorMessage("Problem with AllLeavesCase");
+  }
+
+  bool empty_leaves =
+      min_child->left_ == nullptr && min_child->right_ == nullptr;
+  return empty_leaves ? AllLeavesEmptyCase(min_child)
+                      : OneLeafEmptyCase(min_child);
 }
 
 template <typename T, typename M>
@@ -289,6 +256,12 @@ void BinaryTree<T, M>::ReasignParentChild(Node<T, M> *old_child,
   is_left_child ? parent->left_ = new_child : parent->right_ = new_child;
 
   new_child->parent_ = parent;
+}
+
+template <typename T, typename M>
+void BinaryTree<T, M>::CopySuccessor(Node<T, M> *node, Node<T, M> *successor) {
+  node->key_ = successor->key_;
+  node->value_ = successor->value_;
 }
 
 template <typename T, typename M>

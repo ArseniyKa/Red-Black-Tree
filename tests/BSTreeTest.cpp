@@ -156,7 +156,7 @@ TEST_F(BinarySearchTest,
   auto *root = tree.root();
   EXPECT_EQ(tree.size(), 14);
 
-  tree.remove(89);
+  tree.remove(89); // remove Y
   checkNode(root, 33, std::string("root"));
   checkNode(root->left_, 13, std::string("left_sub_root"));
   checkNode(root->left_->left_, 10, std::string("left_sub_sub_root"));

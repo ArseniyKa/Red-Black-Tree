@@ -423,6 +423,13 @@ TEST_F(RedBlackTreeTest,
   auto *root = tree.root();
   auto *rb_root = tree.GetRBNode(root);
 
+  // clang-format off
+  //                         3
+  //                1                5
+  //             0    2          4        7
+  //                                   6    8
+  //                                          9
+  // clang-format on
   checkNode(rb_root, 3, Color::Black);
   checkNode(tree.GetRBNode(rb_root->left_), 1, Color::Black);
   checkNode(tree.GetRBNode(rb_root->left_->left_), 0, Color::Black);

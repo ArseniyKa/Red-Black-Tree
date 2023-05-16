@@ -43,17 +43,9 @@ protected:
   virtual void CreateNewNode(T key, M value, Node<T, M> *&node,
                              Node<T, M> *parent);
 
-  void NullParentLeaf(T key, Node<T, M> *parent);
-
-  void AllLeavesEmptyCase(Node<T, M> *&node);
-
-  void RightLeafEmptyCase(Node<T, M> *&node);
-
-  void RightChildCase(Node<T, M> *&node);
-
-  void LeftGrandsonNull(Node<T, M> *&node);
-
-  void LeftGrandsonNotNull(Node<T, M> *&node);
+  Node<T, M> *AllLeavesEmptyCase(Node<T, M> *&node);
+  Node<T, M> *OneLeafEmptyCase(Node<T, M> *&node);
+  Node<T, M> *AllLeavesCase(Node<T, M> *&node);
 
   void ErrorMessage(const std::string &message) const;
 
@@ -71,6 +63,8 @@ protected:
                  const std::string &node_name) const;
 
   void ReasignParentChild(Node<T, M> *old_child, Node<T, M> *new_child);
+
+  void CopySuccessor(Node<T, M> *node, Node<T, M> *successor);
 
   std::int64_t size_{0};
   Node<T, M> *root_{nullptr};

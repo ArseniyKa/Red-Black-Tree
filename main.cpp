@@ -5,6 +5,9 @@
 #include <stdint.h>
 
 int main(int argc, char *argv[]) {
+
+  std::vector<int> container {1,2,3,4,5,6,7};
+
   BinaryTree<int, char> tree;
   tree.insert(20, 'd');
   tree.insert(30, 'e');

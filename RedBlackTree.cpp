@@ -27,6 +27,22 @@ void RedBlackTree<T, M>::insert(T key, M value) {
   }
 }
 
+template <typename T, typename M> void RedBlackTree<T, M>::remove(T key) {
+  auto *node = this->find(key);
+  auto *left_child = GetRBNode(node->left_);
+  auto *right_child = GetRBNode(node->right_);
+
+  int child_number = 0;
+  (left_child == nullptr) ? child_number = child_number : child_number++;
+  (right_child == nullptr) ? child_number = child_number : child_number++;
+
+  if (child_number == 0) {
+    ZeroLeavesRemoveCase_new(node);
+  } else if (child_number == 1) {
+    OneLeafRemoveCase(node);
+  }
+}
+
 //======================================
 ///@brief before left rotation:
 //                 X
@@ -262,6 +278,54 @@ void RedBlackTree<T, M>::CheckColor(const Color color) {
         "Error in recolor(): color was previously undefined");
   }
 }
+
+template <typename T, typename M>
+void RedBlackTree<T, M>::ZeroLeavesRemoveCase_new(Node<T, M> *&node) {
+  this->CheckNode(node, __func__, "node");
+
+  if (node->left_ != nullptr || node->right_ != nullptr) {
+    this->ErrorMessage("Error in removeZeroLeavesCase()");
+  }
+
+  auto color = GetRBNode(node)->color_;
+  if (color == Color::Red) {
+    this->AllLeavesEmptyCase((node));
+  } else if (color == Color::Black) {
+    this->ErrorMessage("Error in removeZeroLeavesCase(): Not resolved yet");
+  } else {
+    this->ErrorMessage("Error in removeZeroLeavesCase(): Undefined color");
+  }
+}
+
+template <typename T, typename M>
+void RedBlackTree<T, M>::OneLeafRemoveCase(Node<T, M> *&node) {
+  this->CheckNode(node, __func__, "node");
+
+  auto rb_node = GetRBNode(node);
+  if (rb_node->color_ != Color::Black) {
+    this->ErrorMessage("Error in removeOneLeafCase(): node should be black");
+  }
+
+  if (node->left_ != nullptr && node->right_ != nullptr ||
+      node->left_ == nullptr && node->right_ == nullptr) {
+    this->ErrorMessage("Error in removeOneLeafCase()");
+  }
+
+  auto *child = (node->left_ != nullptr) ? node->left_ : node->right_;
+  auto child_color = GetRBNode(child)->color_;
+
+  if (child_color != Color::Red) {
+    this->ErrorMessage("Error in removeOneLeafCase(): child should be red");
+  }
+
+  BinaryTree<T, M>::remove(node->key_);
+  this->CheckNode(child, __func__, "child");
+  auto *rb_child = GetRBNode(child);
+  rb_child->color_ = Color::Black;
+}
+
+template <typename T, typename M>
+void RedBlackTree<T, M>::TwoLeavesRemoveCase(Node<T, M> *&node) {}
 
 template <typename T, typename M>
 void RedBlackTree<T, M>::RedParentCase(RBNode<T, M> *node) {
