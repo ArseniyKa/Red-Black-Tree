@@ -328,6 +328,43 @@ template <typename T, typename M>
 void RedBlackTree<T, M>::TwoLeavesRemoveCase(Node<T, M> *&node) {}
 
 template <typename T, typename M>
+Node<T, M> *RedBlackTree<T, M>::OneLeafEmptyCase(Node<T, M> *&node) {
+  this->CheckNode(node, __func__, "node");
+  if ((node->left_ != nullptr && node->right_ != nullptr) ||
+      (node->left_ == nullptr && node->right_ == nullptr)) {
+    this->ErrorMessage("Error in OneLeafEmptyCase(): should be one child");
+  }
+
+  bool is_left_child = node->left_ != nullptr;
+  auto child = is_left_child ? node->left_ : node->right_;
+  auto rb_child = GetRBNode(child);
+  rb_child->color_ = Color::Black;
+
+  return this->OneLeafEmptyCase(node);
+}
+
+template <typename T, typename M>
+Node<T, M> *RedBlackTree<T, M>::AllLeavesEmptyCase(Node<T, M> *&node) {
+  this->CheckNode(node, __func__, "node");
+  if (node->left_ != nullptr || node->right_ != nullptr) {
+    this->ErrorMessage("Error in AllLeavesEmptyCase(): shouldn't be any child");
+  }
+
+  auto rb_node = GetRBNode(node);
+  auto color = rb_node->color_;
+
+  if (color == Color::Red) {
+    return this->AllLeavesEmptyCase(node);
+  } else if (color == Color::Black) {
+    this->ErrorMessage("Error in AllLeavesEmptyCase(): Not implemented yet");
+  } else {
+    this->ErrorMessage("Error in AllLeavesEmptyCase(): Undefined node color");
+  }
+
+  return nullptr;
+}
+
+template <typename T, typename M>
 void RedBlackTree<T, M>::RedParentCase(RBNode<T, M> *node) {
   this->CheckNode(node, __func__, "node");
 

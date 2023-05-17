@@ -49,7 +49,8 @@ private:
   void OneLeafRemoveCase(Node<T, M> *&node);
   void TwoLeavesRemoveCase(Node<T, M> *&node);
 
-
+  Node<T, M> *OneLeafEmptyCase(Node<T, M> *&node) override;
+  Node<T, M> *AllLeavesEmptyCase(Node<T, M> *&node) override;
 };
 
 #endif // REDBLACKTREE_H

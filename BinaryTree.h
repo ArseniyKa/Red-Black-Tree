@@ -43,8 +43,8 @@ protected:
   virtual void CreateNewNode(T key, M value, Node<T, M> *&node,
                              Node<T, M> *parent);
 
-  Node<T, M> *AllLeavesEmptyCase(Node<T, M> *&node);
-  Node<T, M> *OneLeafEmptyCase(Node<T, M> *&node);
+  virtual Node<T, M> *AllLeavesEmptyCase(Node<T, M> *&node);
+  virtual Node<T, M> *OneLeafEmptyCase(Node<T, M> *&node);
   Node<T, M> *AllLeavesCase(Node<T, M> *&node);
 
   void ErrorMessage(const std::string &message) const;
