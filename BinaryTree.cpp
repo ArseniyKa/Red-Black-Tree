@@ -67,6 +67,8 @@ template <typename T, typename M> void BinaryTree<T, M>::remove(T key) {
     deleted_node = OneLeafEmptyCase(node);
   }
 
+  CheckNode(deleted_node, __func__, "deleted node");
+
   delete deleted_node;
   size_--;
 }
@@ -103,7 +105,7 @@ Node<T, M> *&BinaryTree<T, M>::SubFind(T key, Node<T, M> *node) {
     return SubFind(key, node->right_);
   } else if (key == node->key_) {
     // место где присваивается узел
-    return node;
+    return node; // NOLINT
   } else {
     throw std::runtime_error("undefined behavior in SubFind()");
   }

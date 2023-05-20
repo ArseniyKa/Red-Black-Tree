@@ -288,7 +288,7 @@ Node<T, M> *RedBlackTree<T, M>::OneLeafEmptyCase(Node<T, M> *&node) {
   auto rb_child = GetRBNode(child);
   rb_child->color_ = Color::Black;
 
-  return this->OneLeafEmptyCase(node);
+  return BinaryTree<T, M>::OneLeafEmptyCase(node);
 }
 
 template <typename T, typename M>
@@ -302,7 +302,7 @@ Node<T, M> *RedBlackTree<T, M>::AllLeavesEmptyCase(Node<T, M> *&node) {
   auto color = rb_node->color_;
 
   if (color == Color::Red) {
-    return this->AllLeavesEmptyCase(node);
+    return BinaryTree<T, M>::AllLeavesEmptyCase(node);
   } else if (color == Color::Black) {
     return DoubleBlackCase(node);
   } else {
@@ -407,6 +407,7 @@ Node<T, M> *RedBlackTree<T, M>::BlackSiblingBlackNephew(RBNode<T, M> *node,
   return nullptr;
 }
 
+///@brief for remove() method
 template <typename T, typename M>
 Node<T, M> *RedBlackTree<T, M>::BlackSiblingRedNephew(RBNode<T, M> *node,
                                                       RBNode<T, M> *sibling) {

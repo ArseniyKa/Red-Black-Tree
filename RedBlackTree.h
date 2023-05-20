@@ -44,7 +44,9 @@ private:
   void LeftParentRightNodeCase(RBNode<T, M> *node);
 
   void CheckColor(const Color color);
+  bool IsRedNode(Node<T, M> *node) const;
 
+  ///@brief this methods for remove case:
   Node<T, M> *OneLeafEmptyCase(Node<T, M> *&node) override;
   Node<T, M> *AllLeavesEmptyCase(Node<T, M> *&node) override;
 
@@ -55,9 +57,8 @@ private:
 
   Node<T, M> *BlackSiblingBlackNephew(RBNode<T, M> *node,
                                       RBNode<T, M> *sibling);
-  Node<T, M> *BlackSiblingRedNephew(RBNode<T, M> *node, RBNode<T, M> *sibling);
 
-  bool IsRedNode(Node<T, M> *node) const;
+  Node<T, M> *BlackSiblingRedNephew(RBNode<T, M> *node, RBNode<T, M> *sibling);
 };
 
 #endif // REDBLACKTREE_H
