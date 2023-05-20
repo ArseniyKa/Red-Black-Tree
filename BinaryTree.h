@@ -22,7 +22,7 @@ public:
 
   Node<T, M> *&find(T key);
 
-  virtual void remove(T key);
+  void remove(T key);
 
   void traverse();
 

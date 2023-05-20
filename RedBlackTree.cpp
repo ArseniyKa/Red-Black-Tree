@@ -27,22 +27,6 @@ void RedBlackTree<T, M>::insert(T key, M value) {
   }
 }
 
-template <typename T, typename M> void RedBlackTree<T, M>::remove(T key) {
-  auto *node = this->find(key);
-  auto *left_child = GetRBNode(node->left_);
-  auto *right_child = GetRBNode(node->right_);
-
-  int child_number = 0;
-  (left_child == nullptr) ? child_number = child_number : child_number++;
-  (right_child == nullptr) ? child_number = child_number : child_number++;
-
-  if (child_number == 0) {
-    ZeroLeavesRemoveCase_new(node);
-  } else if (child_number == 1) {
-    OneLeafRemoveCase(node);
-  }
-}
-
 //======================================
 ///@brief before left rotation:
 //                 X
@@ -81,12 +65,12 @@ void RedBlackTree<T, M>::LeftRotation(Node<T, M> *X) {
 }
 
 //======================================
-///@brief after left rotation:
+///@brief after right rotation:
 //                    Y
 //          X        ///   gama
 //   alpha // beta
 
-///@brief before left rotation:
+///@brief before right rotation:
 //                 X
 //       alpha             Y
 //                   beta /// gama
@@ -186,6 +170,18 @@ RBNode<T, M> *RedBlackTree<T, M>::GetRBNode(Node<T, M> *node) const {
 }
 
 template <typename T, typename M>
+RBNode<T, M> *RedBlackTree<T, M>::GetSibling(Node<T, M> *node) {
+  this->CheckNode(node, __func__, "node");
+
+  auto parent = node->parent_;
+  this->CheckNode(parent, __func__, "parent");
+
+  bool is_left_node = this->IsLeftSideOfNode(node);
+  auto *sibling = is_left_node ? parent->right_ : parent->left_;
+  return dynamic_cast<RBNode<T, M> *>(sibling);
+}
+
+template <typename T, typename M>
 void RedBlackTree<T, M>::RedParentRedUncleCase(RBNode<T, M> *node) {
 
   this->CheckNode(node, __func__, "parent");
@@ -280,54 +276,6 @@ void RedBlackTree<T, M>::CheckColor(const Color color) {
 }
 
 template <typename T, typename M>
-void RedBlackTree<T, M>::ZeroLeavesRemoveCase_new(Node<T, M> *&node) {
-  this->CheckNode(node, __func__, "node");
-
-  if (node->left_ != nullptr || node->right_ != nullptr) {
-    this->ErrorMessage("Error in removeZeroLeavesCase()");
-  }
-
-  auto color = GetRBNode(node)->color_;
-  if (color == Color::Red) {
-    this->AllLeavesEmptyCase((node));
-  } else if (color == Color::Black) {
-    this->ErrorMessage("Error in removeZeroLeavesCase(): Not resolved yet");
-  } else {
-    this->ErrorMessage("Error in removeZeroLeavesCase(): Undefined color");
-  }
-}
-
-template <typename T, typename M>
-void RedBlackTree<T, M>::OneLeafRemoveCase(Node<T, M> *&node) {
-  this->CheckNode(node, __func__, "node");
-
-  auto rb_node = GetRBNode(node);
-  if (rb_node->color_ != Color::Black) {
-    this->ErrorMessage("Error in removeOneLeafCase(): node should be black");
-  }
-
-  if (node->left_ != nullptr && node->right_ != nullptr ||
-      node->left_ == nullptr && node->right_ == nullptr) {
-    this->ErrorMessage("Error in removeOneLeafCase()");
-  }
-
-  auto *child = (node->left_ != nullptr) ? node->left_ : node->right_;
-  auto child_color = GetRBNode(child)->color_;
-
-  if (child_color != Color::Red) {
-    this->ErrorMessage("Error in removeOneLeafCase(): child should be red");
-  }
-
-  BinaryTree<T, M>::remove(node->key_);
-  this->CheckNode(child, __func__, "child");
-  auto *rb_child = GetRBNode(child);
-  rb_child->color_ = Color::Black;
-}
-
-template <typename T, typename M>
-void RedBlackTree<T, M>::TwoLeavesRemoveCase(Node<T, M> *&node) {}
-
-template <typename T, typename M>
 Node<T, M> *RedBlackTree<T, M>::OneLeafEmptyCase(Node<T, M> *&node) {
   this->CheckNode(node, __func__, "node");
   if ((node->left_ != nullptr && node->right_ != nullptr) ||
@@ -356,12 +304,160 @@ Node<T, M> *RedBlackTree<T, M>::AllLeavesEmptyCase(Node<T, M> *&node) {
   if (color == Color::Red) {
     return this->AllLeavesEmptyCase(node);
   } else if (color == Color::Black) {
-    this->ErrorMessage("Error in AllLeavesEmptyCase(): Not implemented yet");
+    return DoubleBlackCase(node);
   } else {
     this->ErrorMessage("Error in AllLeavesEmptyCase(): Undefined node color");
   }
 
+  return node;
+}
+
+template <typename T, typename M>
+Node<T, M> *RedBlackTree<T, M>::DoubleBlackCase(Node<T, M> *node) {
+
+  if (node->key_ == this->root_->key_) {
+    this->ErrorMessage("error: root case");
+  }
+
+  auto *sibling = GetSibling(node);
+
+  if (sibling->color_ == Color::Red) {
+    return RedSiblingCase(node, sibling);
+  } else if (sibling->color_ == Color::Black) {
+    return BlackSiblingCase(node, sibling);
+  } else {
+    this->ErrorMessage("Error in DoubleBlackCase(): Undefined color");
+  }
+
+  return node;
+}
+
+template <typename T, typename M>
+Node<T, M> *RedBlackTree<T, M>::RedSiblingCase(Node<T, M> *node,
+                                               Node<T, M> *sibling) {
+
+  bool is_left_sibling = this->IsLeftSideOfNode(sibling);
+
+  auto *parent = GetRBNode(sibling->parent_);
+  is_left_sibling ? RightRotation(sibling) : LeftRotation(sibling->parent_);
+
+  recolor(parent);
+  recolor(GetRBNode(sibling));
+
+  auto *new_sibling = is_left_sibling ? parent->left_ : parent->right_;
+
+  return BlackSiblingBlackNephew(GetRBNode(node), GetRBNode(new_sibling));
+}
+
+template <typename T, typename M>
+Node<T, M> *RedBlackTree<T, M>::BlackSiblingCase(Node<T, M> *node,
+                                                 Node<T, M> *sibling) {
+  auto *rb_node = GetRBNode(node);
+  auto *rb_sibling = GetRBNode(sibling);
+  auto sibling_color = rb_sibling->color_;
+  auto *left_sibl_child = GetRBNode(rb_sibling->left_);
+  auto *right_sibl_child = GetRBNode(rb_sibling->right_);
+
+  bool is_left_child_null = left_sibl_child == nullptr;
+  bool is_right_child_null = right_sibl_child == nullptr;
+
+  auto left_child_color =
+      is_left_child_null ? Color::Undefined : left_sibl_child->color_;
+  auto right_child_color =
+      is_right_child_null ? Color::Undefined : right_sibl_child->color_;
+
+  bool accepted = !is_left_child_null && !is_right_child_null &&
+                  left_child_color == Color::Black &&
+                  right_child_color == Color::Black;
+
+  accepted |= is_left_child_null && !is_right_child_null &&
+              right_child_color == Color::Black;
+
+  accepted |= !is_left_child_null && is_right_child_null &&
+              left_child_color == Color::Black;
+
+  if (accepted) {
+    return BlackSiblingBlackNephew(rb_node, rb_sibling);
+  } else {
+    return BlackSiblingRedNephew(rb_node, rb_sibling);
+  }
+
   return nullptr;
+}
+
+template <typename T, typename M>
+Node<T, M> *RedBlackTree<T, M>::BlackSiblingBlackNephew(RBNode<T, M> *node,
+                                                        RBNode<T, M> *sibling) {
+  this->CheckNode(node, __func__, "node");
+  auto *rb_node = GetRBNode(node);
+  auto parent = GetRBNode(node->parent_);
+  auto rb_sibling = GetRBNode(sibling);
+  recolor(rb_sibling);
+  if (parent->color_ == Color::Black) {
+    delete node;
+    recolor(rb_sibling);
+    return DoubleBlackCase(parent);
+  } else if (parent->color_ == Color::Red) {
+    recolor(rb_sibling);
+    return node;
+  } else {
+    this->ErrorMessage("Error in BlackSiblingBlackNephew()");
+  }
+
+  return nullptr;
+}
+
+template <typename T, typename M>
+Node<T, M> *RedBlackTree<T, M>::BlackSiblingRedNephew(RBNode<T, M> *node,
+                                                      RBNode<T, M> *sibling) {
+
+  bool is_right_sibling = !this->IsLeftSideOfNode(sibling);
+
+  auto *left_child = GetRBNode(sibling->left_);
+  auto *right_child = GetRBNode(sibling->right_);
+
+  bool left_child_red = IsRedNode(left_child);
+  bool right_child_red = IsRedNode(right_child);
+
+  bool accepted = left_child_red || right_child_red;
+
+  if (!accepted) {
+    this->ErrorMessage("Error in BlackSiblingRedNephew(): should be at least "
+                       "one red newphew ");
+  }
+
+  if (is_right_sibling && right_child_red) {
+    LeftRotation(node->parent_);
+    recolor(right_child);
+  } else if (is_right_sibling && !right_child_red) {
+    RightRotation(left_child);
+    LeftRotation(node->parent_);
+    recolor(left_child);
+  } else if (!is_right_sibling && right_child_red) {
+    LeftRotation(sibling);
+    RightRotation(right_child);
+    recolor(right_child);
+  } else {
+    RightRotation(sibling);
+    recolor(left_child);
+  }
+
+  return node;
+}
+
+template <typename T, typename M>
+bool RedBlackTree<T, M>::IsRedNode(Node<T, M> *node) const {
+
+  if (node == nullptr) {
+    return false;
+  }
+
+  auto *rb_node = GetRBNode(node);
+  auto color = rb_node->color_;
+  if (color == Color::Undefined) {
+    this->ErrorMessage("Undefined color");
+  }
+  return (color == Color::Red);
 }
 
 template <typename T, typename M>

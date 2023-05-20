@@ -21,11 +21,11 @@ public:
 
   void insert(T key, M value) override;
 
-  void remove(T key) override;
-
   RBNode<T, M> *GetUncle(Node<T, M> *node);
 
   RBNode<T, M> *GetRBNode(Node<T, M> *node) const;
+
+  RBNode<T, M> *GetSibling(Node<T, M> *node);
 
 private:
   void TreeEmtyCase(T key, M value);
@@ -45,12 +45,19 @@ private:
 
   void CheckColor(const Color color);
 
-  void ZeroLeavesRemoveCase_new(Node<T, M> *&node);
-  void OneLeafRemoveCase(Node<T, M> *&node);
-  void TwoLeavesRemoveCase(Node<T, M> *&node);
-
   Node<T, M> *OneLeafEmptyCase(Node<T, M> *&node) override;
   Node<T, M> *AllLeavesEmptyCase(Node<T, M> *&node) override;
+
+  Node<T, M> *DoubleBlackCase(Node<T, M> *node);
+
+  Node<T, M> *RedSiblingCase(Node<T, M> *node, Node<T, M> *sibling);
+  Node<T, M> *BlackSiblingCase(Node<T, M> *node, Node<T, M> *sibling);
+
+  Node<T, M> *BlackSiblingBlackNephew(RBNode<T, M> *node,
+                                      RBNode<T, M> *sibling);
+  Node<T, M> *BlackSiblingRedNephew(RBNode<T, M> *node, RBNode<T, M> *sibling);
+
+  bool IsRedNode(Node<T, M> *node) const;
 };
 
 #endif // REDBLACKTREE_H
