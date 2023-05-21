@@ -82,10 +82,18 @@ void RedBlackTree<T, M>::RightRotation(Node<T, M> *X) {
   auto *beta = X->right_;
   auto *parent = Y->parent_; // upper parent of Y
 
-  // init upper parent - X
-  bool node_is_left = this->IsLeftSideOfNode(Y);
+  // in case of 3 elements 10 - 9 - 8 it can be exception without this if
+  if (Y->key_ != this->root_->key_) {
+    // init upper parent - X
+    bool node_is_left = this->IsLeftSideOfNode(Y);
+    node_is_left ? this->CreateLeftEdge(parent, X)
+                 : this->CreateRightEdge(parent, X);
+  } else {
+    this->root_ = X;
+    X->parent_ = nullptr;
+  }
 
-  if (this->size_ < 3 || X == nullptr || Y == nullptr || parent == nullptr) {
+  if (this->size_ < 3 || X == nullptr || Y == nullptr) {
     this->ErrorMessage("Error in RightRotation()");
   }
   // init X - Y
@@ -93,9 +101,6 @@ void RedBlackTree<T, M>::RightRotation(Node<T, M> *X) {
 
   // init Y - beta
   this->CreateLeftEdge(Y, beta);
-
-  node_is_left ? this->CreateLeftEdge(parent, X)
-               : this->CreateRightEdge(parent, X);
 }
 
 template <typename T, typename M>
