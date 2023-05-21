@@ -456,9 +456,11 @@ Node<T, M> *RedBlackTree<T, M>::BlackSiblingRedNephew(RBNode<T, M> *node,
     LeftRotation(sibling);
     RightRotation(right_child);
     recolor(right_child);
-  } else {
+  } else { // left left case
     RightRotation(sibling);
     recolor(left_child);
+    ///@todo this is crutch. figure out how is was this problem with parent
+    rb_parent->right_ = nullptr;
   }
 
   return node;
