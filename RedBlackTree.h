@@ -55,7 +55,7 @@ private:
   Node<T, M> *RedSiblingCase(Node<T, M> *node, Node<T, M> *sibling);
   Node<T, M> *BlackSiblingCase(Node<T, M> *node, Node<T, M> *sibling);
 
-  Node<T, M> *BlackSiblingBlackNephew(RBNode<T, M> *node,
+  Node<T, M> *BlackSiblingBlackNephews(RBNode<T, M> *node,
                                       RBNode<T, M> *sibling);
 
   Node<T, M> *BlackSiblingRedNephew(RBNode<T, M> *node, RBNode<T, M> *sibling);

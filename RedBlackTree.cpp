@@ -346,7 +346,7 @@ Node<T, M> *RedBlackTree<T, M>::RedSiblingCase(Node<T, M> *node,
 
   auto *new_sibling = is_left_sibling ? parent->left_ : parent->right_;
 
-  return BlackSiblingBlackNephew(GetRBNode(node), GetRBNode(new_sibling));
+  return BlackSiblingBlackNephews(GetRBNode(node), GetRBNode(new_sibling));
 }
 
 template <typename T, typename M>
@@ -355,29 +355,31 @@ Node<T, M> *RedBlackTree<T, M>::BlackSiblingCase(Node<T, M> *node,
   auto *rb_node = GetRBNode(node);
   auto *rb_sibling = GetRBNode(sibling);
   auto sibling_color = rb_sibling->color_;
-  auto *left_sibl_child = GetRBNode(rb_sibling->left_);
-  auto *right_sibl_child = GetRBNode(rb_sibling->right_);
+  bool is_left_child_null = rb_sibling->left_ == nullptr;
+  bool is_right_child_null = rb_sibling->right_ == nullptr;
 
-  bool is_left_child_null = left_sibl_child == nullptr;
-  bool is_right_child_null = right_sibl_child == nullptr;
+  auto *left_sibl_child =
+      is_left_child_null ? nullptr : GetRBNode(rb_sibling->left_);
+  auto *right_sibl_child =
+      is_right_child_null ? nullptr : GetRBNode(rb_sibling->right_);
 
   auto left_child_color =
       is_left_child_null ? Color::Undefined : left_sibl_child->color_;
   auto right_child_color =
       is_right_child_null ? Color::Undefined : right_sibl_child->color_;
 
-  bool accepted = !is_left_child_null && !is_right_child_null &&
-                  left_child_color == Color::Black &&
-                  right_child_color == Color::Black;
+  bool black_black_case = !is_left_child_null && !is_right_child_null &&
+                          left_child_color == Color::Black &&
+                          right_child_color == Color::Black;
 
-  accepted |= is_left_child_null && !is_right_child_null &&
-              right_child_color == Color::Black;
+  black_black_case |= is_left_child_null && !is_right_child_null &&
+                      right_child_color == Color::Black;
 
-  accepted |= !is_left_child_null && is_right_child_null &&
-              left_child_color == Color::Black;
+  black_black_case |= !is_left_child_null && is_right_child_null &&
+                      left_child_color == Color::Black;
 
-  if (accepted) {
-    return BlackSiblingBlackNephew(rb_node, rb_sibling);
+  if (black_black_case) {
+    return BlackSiblingBlackNephews(rb_node, rb_sibling);
   } else {
     return BlackSiblingRedNephew(rb_node, rb_sibling);
   }
@@ -386,8 +388,9 @@ Node<T, M> *RedBlackTree<T, M>::BlackSiblingCase(Node<T, M> *node,
 }
 
 template <typename T, typename M>
-Node<T, M> *RedBlackTree<T, M>::BlackSiblingBlackNephew(RBNode<T, M> *node,
-                                                        RBNode<T, M> *sibling) {
+Node<T, M> *
+RedBlackTree<T, M>::BlackSiblingBlackNephews(RBNode<T, M> *node,
+                                             RBNode<T, M> *sibling) {
   this->CheckNode(node, __func__, "node");
   auto *rb_node = GetRBNode(node);
   auto parent = GetRBNode(node->parent_);
@@ -414,8 +417,12 @@ Node<T, M> *RedBlackTree<T, M>::BlackSiblingRedNephew(RBNode<T, M> *node,
 
   bool is_right_sibling = !this->IsLeftSideOfNode(sibling);
 
-  auto *left_child = GetRBNode(sibling->left_);
-  auto *right_child = GetRBNode(sibling->right_);
+  bool is_left_child_null = sibling->left_ == nullptr;
+  bool is_right_child_null = sibling->right_ == nullptr;
+
+  auto *left_child = is_left_child_null ? nullptr : GetRBNode(sibling->left_);
+  auto *right_child =
+      is_right_child_null ? nullptr : GetRBNode(sibling->right_);
 
   bool left_child_red = IsRedNode(left_child);
   bool right_child_red = IsRedNode(right_child);
@@ -427,13 +434,24 @@ Node<T, M> *RedBlackTree<T, M>::BlackSiblingRedNephew(RBNode<T, M> *node,
                        "one red newphew ");
   }
 
+  auto *rb_parent = GetRBNode(node->parent_);
   if (is_right_sibling && right_child_red) {
     LeftRotation(node->parent_);
     recolor(right_child);
+    if (rb_parent->color_ == Color::Red) {
+      recolor(rb_parent);
+      recolor(sibling);
+    }
   } else if (is_right_sibling && !right_child_red) {
     RightRotation(left_child);
     LeftRotation(node->parent_);
-    recolor(left_child);
+    if (rb_parent->color_ == Color::Red) {
+      recolor(rb_parent);
+    } else {
+      recolor(left_child);
+    }
+    ///@todo this is crutch. figure out how is was this problem with parent
+    rb_parent->left_ = nullptr;
   } else if (!is_right_sibling && right_child_red) {
     LeftRotation(sibling);
     RightRotation(right_child);

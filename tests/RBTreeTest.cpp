@@ -524,39 +524,8 @@ TEST_F(RedBlackTreeTest, remove_AllLeavesEmpty_Black_Deletion_RR_Test) {
   // clang-format off
           //                         3
           //                1                5
-          //             0    2          4        7
-          //                                   6    8
-          //
-  // clang-format on
-  //  checkNode(rb_root, 3, Color::Black);
-  //  checkNode(tree.GetRBNode(rb_root->left_), 1, Color::Black);
-  //  checkNode(tree.GetRBNode(rb_root->left_->left_), 0, Color::Black);
-  //  checkNode(tree.GetRBNode(rb_root->left_->right_), 2, Color::Black);
-  //  checkNode(tree.GetRBNode(rb_root->right_), 5, Color::Black);
-  //  checkNode(tree.GetRBNode(rb_root->right_->left_), 4, Color::Black);
-  //  checkNode(tree.GetRBNode(rb_root->right_->right_), 7, Color::Red);
-  //  checkNode(tree.GetRBNode(rb_root->right_->right_->left_), 6,
-  //  Color::Black); checkNode(tree.GetRBNode(rb_root->right_->right_->right_),
-  //  8, Color::Black);
-
-  //  EXPECT_EQ(rb_root->right_->right_->right_->right_, nullptr);
-  //  EXPECT_EQ(rb_root->right_->right_->right_->left_, nullptr);
-  //  EXPECT_EQ(tree.size(), 9);
-}
-
-TEST_F(RedBlackTreeTest, remove_OneLeafEmptyCase_Test) {
-
-  auto tree = CreateSequancyTree();
-  tree.remove(8);
-
-  auto *root = tree.root();
-  auto *rb_root = tree.GetRBNode(root);
-
-  // clang-format off
-          //                         3
-          //                1                5
-          //             0    2          4        7
-          //                                   6    9
+          //             0    2          4        8(r)
+          //                                   7     9
           //
   // clang-format on
   checkNode(rb_root, 3, Color::Black);
@@ -565,13 +534,187 @@ TEST_F(RedBlackTreeTest, remove_OneLeafEmptyCase_Test) {
   checkNode(tree.GetRBNode(rb_root->left_->right_), 2, Color::Black);
   checkNode(tree.GetRBNode(rb_root->right_), 5, Color::Black);
   checkNode(tree.GetRBNode(rb_root->right_->left_), 4, Color::Black);
-  checkNode(tree.GetRBNode(rb_root->right_->right_), 7, Color::Red);
-  checkNode(tree.GetRBNode(rb_root->right_->right_->left_), 6, Color::Black);
+  checkNode(tree.GetRBNode(rb_root->right_->right_), 8, Color::Red);
+  checkNode(tree.GetRBNode(rb_root->right_->right_->left_), 7, Color::Black);
   checkNode(tree.GetRBNode(rb_root->right_->right_->right_), 9, Color::Black);
 
   EXPECT_EQ(rb_root->right_->right_->right_->right_, nullptr);
   EXPECT_EQ(rb_root->right_->right_->right_->left_, nullptr);
   EXPECT_EQ(tree.size(), 9);
 }
+
+TEST_F(RedBlackTreeTest, remove_AllLeavesEmpty_Black_Deletion_RL_Test) {
+
+  auto tree = CreateSequancyTree();
+  tree.insert(15, 15);
+  tree.insert(12, 12);
+
+  auto *root = tree.root();
+  auto *rb_root = tree.GetRBNode(root);
+
+  // clang-format off
+  //                         3
+  //                1                7
+  //             0    2          5(r)         9(r)
+  //                          4     6      8          15
+  //                                              12(r)
+  //
+  // clang-format on
+  checkNode(rb_root, 3, Color::Black);
+  checkNode(tree.GetRBNode(rb_root->left_), 1, Color::Black);
+  checkNode(tree.GetRBNode(rb_root->left_->left_), 0, Color::Black);
+  checkNode(tree.GetRBNode(rb_root->left_->right_), 2, Color::Black);
+  checkNode(tree.GetRBNode(rb_root->right_), 7, Color::Black);
+  checkNode(tree.GetRBNode(rb_root->right_->left_), 5, Color::Red);
+  checkNode(tree.GetRBNode(rb_root->right_->left_->left_), 4, Color::Black);
+  checkNode(tree.GetRBNode(rb_root->right_->left_->right_), 6, Color::Black);
+  checkNode(tree.GetRBNode(rb_root->right_->right_), 9, Color::Red);
+  checkNode(tree.GetRBNode(rb_root->right_->right_->left_), 8, Color::Black);
+  checkNode(tree.GetRBNode(rb_root->right_->right_->right_), 15, Color::Black);
+  checkNode(tree.GetRBNode(rb_root->right_->right_->right_->left_), 12,
+            Color::Red);
+
+  EXPECT_EQ(tree.size(), 12);
+
+  ///////////////////////////////////////////////
+
+  tree.remove(8);
+
+  // clang-format off
+          //                         3
+          //                1                   7
+          //             0    2          5(r)          12(r)
+          //                          4      6       9      15
+          //
+          //
+  // clang-format on
+  checkNode(rb_root, 3, Color::Black);
+  checkNode(tree.GetRBNode(rb_root->left_), 1, Color::Black);
+  checkNode(tree.GetRBNode(rb_root->left_->left_), 0, Color::Black);
+  checkNode(tree.GetRBNode(rb_root->left_->right_), 2, Color::Black);
+  checkNode(tree.GetRBNode(rb_root->right_), 7, Color::Black);
+  checkNode(tree.GetRBNode(rb_root->right_->left_), 5, Color::Red);
+  checkNode(tree.GetRBNode(rb_root->right_->left_->left_), 4, Color::Black);
+  checkNode(tree.GetRBNode(rb_root->right_->left_->right_), 6, Color::Black);
+  checkNode(tree.GetRBNode(rb_root->right_->right_), 12, Color::Red);
+  checkNode(tree.GetRBNode(rb_root->right_->right_->left_), 9, Color::Black);
+  checkNode(tree.GetRBNode(rb_root->right_->right_->right_), 15, Color::Black);
+
+  // leaves for 15 node
+  EXPECT_EQ(rb_root->right_->right_->right_->right_, nullptr);
+  EXPECT_EQ(rb_root->right_->right_->right_->left_, nullptr);
+
+  // leaves for 9 node
+  EXPECT_EQ(rb_root->right_->right_->left_->left_, nullptr);
+  EXPECT_EQ(rb_root->right_->right_->left_->right_, nullptr);
+
+  // leaves for 0 node
+  EXPECT_EQ(rb_root->left_->left_->left_, nullptr);
+  EXPECT_EQ(rb_root->left_->left_->right_, nullptr);
+
+  // leaves for 2 node
+  EXPECT_EQ(rb_root->left_->right_->left_, nullptr);
+  EXPECT_EQ(rb_root->left_->right_->right_, nullptr);
+
+  EXPECT_EQ(tree.size(), 11);
+}
+
+TEST_F(RedBlackTreeTest, remove_AllLeavesEmpty_Black_Deletion_LL_Test) {
+
+  auto tree = CreateSequancyTree();
+  tree.insert(15, 15);
+  tree.insert(12, 12);
+
+  auto *root = tree.root();
+  auto *rb_root = tree.GetRBNode(root);
+
+  // clang-format off
+          //                         3
+          //                1                7
+          //             0    2          5(r)         9(r)
+          //                          4     6      8          15
+          //                                              12(r)
+          //
+  // clang-format on
+  checkNode(rb_root, 3, Color::Black);
+  checkNode(tree.GetRBNode(rb_root->left_), 1, Color::Black);
+  checkNode(tree.GetRBNode(rb_root->left_->left_), 0, Color::Black);
+  checkNode(tree.GetRBNode(rb_root->left_->right_), 2, Color::Black);
+  checkNode(tree.GetRBNode(rb_root->right_), 7, Color::Black);
+  checkNode(tree.GetRBNode(rb_root->right_->left_), 5, Color::Red);
+  checkNode(tree.GetRBNode(rb_root->right_->left_->left_), 4, Color::Black);
+  checkNode(tree.GetRBNode(rb_root->right_->left_->right_), 6, Color::Black);
+  checkNode(tree.GetRBNode(rb_root->right_->right_), 9, Color::Red);
+  checkNode(tree.GetRBNode(rb_root->right_->right_->left_), 8, Color::Black);
+  checkNode(tree.GetRBNode(rb_root->right_->right_->right_), 15, Color::Black);
+  checkNode(tree.GetRBNode(rb_root->right_->right_->right_->left_), 12,
+            Color::Red);
+
+  EXPECT_EQ(tree.size(), 12);
+
+  ///////////////////////////////////////////////
+
+  tree.remove(8);
+
+  // clang-format off
+          //                         3
+          //                1                   7
+          //             0    2          5(r)          12(r)
+          //                          4      6       9      15
+          //
+          //
+  // clang-format on
+  checkNode(rb_root, 3, Color::Black);
+  checkNode(tree.GetRBNode(rb_root->left_), 1, Color::Black);
+  checkNode(tree.GetRBNode(rb_root->left_->left_), 0, Color::Black);
+  checkNode(tree.GetRBNode(rb_root->left_->right_), 2, Color::Black);
+  checkNode(tree.GetRBNode(rb_root->right_), 7, Color::Black);
+  checkNode(tree.GetRBNode(rb_root->right_->left_), 5, Color::Red);
+  checkNode(tree.GetRBNode(rb_root->right_->left_->left_), 4, Color::Black);
+  checkNode(tree.GetRBNode(rb_root->right_->left_->right_), 6, Color::Black);
+  checkNode(tree.GetRBNode(rb_root->right_->right_), 12, Color::Red);
+  checkNode(tree.GetRBNode(rb_root->right_->right_->left_), 9, Color::Black);
+  checkNode(tree.GetRBNode(rb_root->right_->right_->right_), 15, Color::Black);
+
+  // leaves for 15 node
+  EXPECT_EQ(rb_root->right_->right_->right_->right_, nullptr);
+  EXPECT_EQ(rb_root->right_->right_->right_->left_, nullptr);
+
+  // leaves for 9 node
+  EXPECT_EQ(rb_root->right_->right_->left_->left_, nullptr);
+  EXPECT_EQ(rb_root->right_->right_->left_->right_, nullptr);
+
+  EXPECT_EQ(tree.size(), 11);
+}
+
+// TEST_F(RedBlackTreeTest, remove_OneLeafEmptyCase_Test) {
+
+//  auto tree = CreateSequancyTree();
+//  tree.remove(8);
+
+//  auto *root = tree.root();
+//  auto *rb_root = tree.GetRBNode(root);
+
+//  // clang-format off
+//          //                         3
+//          //                1                5
+//          //             0    2          4        7
+//          //                                   6    9
+//          //
+//  // clang-format on
+//  checkNode(rb_root, 3, Color::Black);
+//  checkNode(tree.GetRBNode(rb_root->left_), 1, Color::Black);
+//  checkNode(tree.GetRBNode(rb_root->left_->left_), 0, Color::Black);
+//  checkNode(tree.GetRBNode(rb_root->left_->right_), 2, Color::Black);
+//  checkNode(tree.GetRBNode(rb_root->right_), 5, Color::Black);
+//  checkNode(tree.GetRBNode(rb_root->right_->left_), 4, Color::Black);
+//  checkNode(tree.GetRBNode(rb_root->right_->right_), 7, Color::Red);
+//  checkNode(tree.GetRBNode(rb_root->right_->right_->left_), 6, Color::Black);
+//  checkNode(tree.GetRBNode(rb_root->right_->right_->right_), 9, Color::Black);
+
+//  EXPECT_EQ(rb_root->right_->right_->right_->right_, nullptr);
+//  EXPECT_EQ(rb_root->right_->right_->right_->left_, nullptr);
+//  EXPECT_EQ(tree.size(), 9);
+//}
 
 } // namespace bstree::test
