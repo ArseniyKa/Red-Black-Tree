@@ -440,7 +440,7 @@ Node<T, M> *RedBlackTree<T, M>::BlackSiblingRedNephew(RBNode<T, M> *node,
   }
 
   auto *rb_parent = GetRBNode(node->parent_);
-  if (is_right_sibling && right_child_red) {
+  if (is_right_sibling && right_child_red) { // right-right case
     LeftRotation(node->parent_);
     recolor(right_child);
     if (rb_parent->color_ == Color::Red) {
@@ -460,8 +460,14 @@ Node<T, M> *RedBlackTree<T, M>::BlackSiblingRedNephew(RBNode<T, M> *node,
   } else if (!is_right_sibling && right_child_red) {
     LeftRotation(sibling);
     RightRotation(right_child);
-    recolor(right_child);
-  } else { // left left case
+    if (rb_parent->color_ == Color::Red) {
+      recolor(rb_parent);
+    } else {
+      recolor(right_child);
+    }
+    ///@todo this is crutch. figure out how is was this problem with parent
+    rb_parent->right_ = nullptr;
+  } else { // left-left case
     RightRotation(sibling);
     recolor(left_child);
     ///@todo this is crutch. figure out how is was this problem with parent
