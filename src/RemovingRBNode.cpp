@@ -194,7 +194,6 @@ RedBlackTree<T, M>::BlackSiblingBlackNephews(RBNode<T, M> *node,
     DoubleBlackCase(parent);
     return node;
   } else if (parent->color_ == Color::Red) {
-    recolor(rb_sibling);
     return node;
   } else {
     this->ErrorMessage("Error in BlackSiblingBlackNephew()");
