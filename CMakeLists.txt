@@ -47,6 +47,7 @@ target_include_directories(RBTree PUBLIC
 add_library(_bst_tree
    src/BinaryTree.cpp
    src/RedBlackTree.cpp
+   src/RemovingRBNode.cpp
    include/BinaryTree.h
    include/RedBlackTree.h
 )
