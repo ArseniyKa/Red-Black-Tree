@@ -35,18 +35,29 @@ add_subdirectory(tests)
 
 add_executable(RBTree
   main.cpp
-  BinaryTree.cpp
+  src/BinaryTree.cpp
+  include/BinaryTree.h
+)
+
+target_include_directories(RBTree PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    include
 )
 
 add_library(_bst_tree
-   BinaryTree.cpp
-   RedBlackTree.cpp
+   src/BinaryTree.cpp
+   src/RedBlackTree.cpp
+   include/BinaryTree.h
+   include/RedBlackTree.h
 )
 
 target_link_libraries(RBTree Qt${QT_VERSION_MAJOR}::Core)
 target_link_libraries(_bst_tree Qt${QT_VERSION_MAJOR}::Core)
-target_include_directories(_bst_tree PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(_bst_tree PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    include
+)
 
 
-install(TARGETS RBTree
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+#install(TARGETS RBTree
+#    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
