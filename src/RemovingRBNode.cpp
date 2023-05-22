@@ -148,6 +148,8 @@ Node<T, M> *RedBlackTree<T, M>::BlackSiblingCase(Node<T, M> *node,
   black_black_case |= !is_left_child_null && is_right_child_null &&
                       left_child_color == Color::Black;
 
+  black_black_case |= is_left_child_null && is_right_child_null;
+
   if (black_black_case) {
     return BlackSiblingBlackNephews(rb_node, rb_sibling);
   } else {
@@ -183,10 +185,14 @@ RedBlackTree<T, M>::BlackSiblingBlackNephews(RBNode<T, M> *node,
   auto parent = GetRBNode(node->parent_);
   auto rb_sibling = GetRBNode(sibling);
   recolor(rb_sibling);
+
+  ///@note maybe in this pointer nullptr is null
+  bool is_left_node = this->IsLeftSideOfNode(node);
+  is_left_node ? parent->left_ = nullptr : parent->right_ = nullptr;
+
   if (parent->color_ == Color::Black) {
-    delete node;
-    recolor(rb_sibling);
-    return DoubleBlackCase(parent);
+    DoubleBlackCase(parent);
+    return node;
   } else if (parent->color_ == Color::Red) {
     recolor(rb_sibling);
     return node;
