@@ -173,7 +173,8 @@ Node<T, M> *RedBlackTree<T, M>::RedSiblingCase(Node<T, M> *node,
 
   auto *new_sibling = is_left_sibling ? parent->left_ : parent->right_;
 
-  return BlackSiblingBlackNephews(GetRBNode(node), GetRBNode(new_sibling));
+  BlackSiblingCase(GetRBNode(node), GetRBNode(new_sibling));
+  return node;
 }
 
 template <typename T, typename M>
@@ -194,6 +195,7 @@ RedBlackTree<T, M>::BlackSiblingBlackNephews(RBNode<T, M> *node,
     DoubleBlackCase(parent);
     return node;
   } else if (parent->color_ == Color::Red) {
+    recolor(parent);
     return node;
   } else {
     this->ErrorMessage("Error in BlackSiblingBlackNephew()");
