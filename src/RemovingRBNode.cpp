@@ -40,9 +40,9 @@ Node<T, M> *RedBlackTree<T, M>::OneLeafEmptyCase(Node<T, M> *&node) {
 template <typename T, typename M>
 Node<T, M> *RedBlackTree<T, M>::DoubleBlackCase(Node<T, M> *node) {
 
-  if (node->key_ == this->root_->key_) {
-    this->ErrorMessage("error: root case");
-  }
+  //  if (node->key_ == this->root_->key_) {
+  //    this->ErrorMessage("error: root case");
+  //  }
 
   auto *sibling = GetSibling(node);
 

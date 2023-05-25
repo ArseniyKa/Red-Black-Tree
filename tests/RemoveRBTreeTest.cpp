@@ -592,8 +592,6 @@ TEST_F(RemoveRedBlackTreeTest, remove_AllLeaves_BlackCase_Test) {
   checkNode(tree.GetRBNode(rb_root->right_->right_->left_), 7, Color::Black);
   checkNode(tree.GetRBNode(rb_root->right_->right_->right_), 9, Color::Black);
 
-  //  EXPECT_EQ(rb_root->right_->right_->right_->right_, nullptr);
-  //  EXPECT_EQ(rb_root->right_->right_->right_->left_, nullptr);
   EXPECT_EQ(tree.size(), 9);
 }
 
@@ -623,6 +621,38 @@ TEST_F(RemoveRedBlackTreeTest, remove_AllLeaves_RedCase_Test) {
   checkNode(tree.GetRBNode(rb_root->right_->right_->right_), 9, Color::Black);
 
   EXPECT_EQ(tree.size(), 9);
+}
+
+TEST_F(RemoveRedBlackTreeTest, remove_root_Test) {
+
+  auto tree = CreateSequancyTree();
+  tree.remove(3);
+
+  auto *root = tree.root();
+  auto *rb_root = tree.GetRBNode(root);
+
+  // clang-format off
+          //                         4
+          //                1                  7
+          //             0    2          5            8
+          //                              6(r)         9(r)
+          //
+  // clang-format on
+  checkNode(rb_root, 4, Color::Black);
+  checkNode(tree.GetRBNode(rb_root->left_), 1, Color::Black);
+  checkNode(tree.GetRBNode(rb_root->left_->left_), 0, Color::Black);
+  checkNode(tree.GetRBNode(rb_root->left_->right_), 2, Color::Black);
+  checkNode(tree.GetRBNode(rb_root->right_), 7, Color::Black);
+  checkNode(tree.GetRBNode(rb_root->right_->left_), 5, Color::Black);
+  checkNode(tree.GetRBNode(rb_root->right_->left_->right_), 6, Color::Red);
+  checkNode(tree.GetRBNode(rb_root->right_->right_), 8, Color::Black);
+  checkNode(tree.GetRBNode(rb_root->right_->right_->right_), 9, Color::Red);
+
+  EXPECT_EQ(tree.size(), 9);
+
+  RedBlackTree<int, int> tree2;
+  tree2.insert(1, 1);
+  tree2.remove(1);
 }
 
 } // namespace bstree::test

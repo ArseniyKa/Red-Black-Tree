@@ -59,6 +59,15 @@ template <typename T, typename M> Node<T, M> *&BinaryTree<T, M>::find(T key) {
 template <typename T, typename M> void BinaryTree<T, M>::remove(T key) {
   auto *node = find(key);
   Node<T, M> *deleted_node = nullptr;
+
+  // if only one node
+  if (this->size_ == 1) {
+    delete deleted_node;
+    size_--;
+    root_ = nullptr;
+    return;
+  }
+
   if (node->left_ == nullptr && node->right_ == nullptr) {
     deleted_node = AllLeavesEmptyCase(node);
   } else if (node->left_ != nullptr && node->right_ != nullptr) {
@@ -302,9 +311,9 @@ bool BinaryTree<T, M>::IsLeftSideOfNode(Node<T, M> *node) const {
 
   this->CheckNode(node, __func__, "node");
 
-  if (node->key_ == this->root_->key_) {
-    this->ErrorMessage("Error in IsLeftSideOfNode():  node = root");
-  }
+  //  if (node->key_ == this->root_->key_) {
+  //    this->ErrorMessage("Error in IsLeftSideOfNode():  node = root");
+  //  }
 
   auto *parent = node->parent_;
   this->CheckNode(parent, __func__, "parent");
