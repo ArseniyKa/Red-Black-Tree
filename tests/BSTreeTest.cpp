@@ -231,6 +231,22 @@ TEST_F(BinarySearchTest, BSTreeIteratorTest) { // NOLINT
     ++expected_itr;
     ++itr;
   }
+
+  // use iterators several times
+  int val = 0;
+  for (auto elem : tree) {
+    EXPECT_EQ(elem.first, val++);
+  }
+
+  val = 0;
+  for (auto elem : tree) {
+    EXPECT_EQ(elem.first, val++);
+  }
+
+  val = 0;
+  for (auto elem : tree) {
+    EXPECT_EQ(elem.first, val++);
+  }
 }
 
 } // namespace bstree::test
