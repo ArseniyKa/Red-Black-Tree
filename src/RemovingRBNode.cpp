@@ -13,7 +13,11 @@ Node<T, M> *RedBlackTree<T, M>::AllLeavesEmptyCase(Node<T, M> *&node) {
   if (color == Color::Red) {
     return BinaryTree<T, M>::AllLeavesEmptyCase(node);
   } else if (color == Color::Black) {
-    return DoubleBlackCase(node);
+    auto *deleted_node = DoubleBlackCase(node);
+    bool is_left_child = this->IsLeftSideOfNode(deleted_node);
+    auto *parent = deleted_node->parent_;
+    is_left_child ? parent->left_ = nullptr : parent->right_ = nullptr;
+    return deleted_node;
   } else {
     this->ErrorMessage("Error in AllLeavesEmptyCase(): Undefined node color");
   }
@@ -97,8 +101,6 @@ Node<T, M> *RedBlackTree<T, M>::BlackSiblingRedNephew(RBNode<T, M> *node,
     } else {
       recolor(left_child);
     }
-    ///@todo this is crutch. figure out how is was this problem with parent
-    rb_parent->left_ = nullptr;
   } else if (!is_right_sibling && right_child_red) {
     LeftRotation(sibling);
     RightRotation(right_child);
@@ -107,13 +109,9 @@ Node<T, M> *RedBlackTree<T, M>::BlackSiblingRedNephew(RBNode<T, M> *node,
     } else {
       recolor(right_child);
     }
-    ///@todo this is crutch. figure out how is was this problem with parent
-    rb_parent->right_ = nullptr;
   } else { // left-left case
     RightRotation(sibling);
     recolor(left_child);
-    ///@todo this is crutch. figure out how is was this problem with parent
-    rb_parent->right_ = nullptr;
   }
 
   return node;
@@ -186,10 +184,6 @@ RedBlackTree<T, M>::BlackSiblingBlackNephews(RBNode<T, M> *node,
   auto parent = GetRBNode(node->parent_);
   auto rb_sibling = GetRBNode(sibling);
   recolor(rb_sibling);
-
-  ///@note maybe in this pointer nullptr is null
-  bool is_left_node = this->IsLeftSideOfNode(node);
-  is_left_node ? parent->left_ = nullptr : parent->right_ = nullptr;
 
   if (parent->color_ == Color::Black) {
     DoubleBlackCase(parent);

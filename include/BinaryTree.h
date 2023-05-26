@@ -66,6 +66,8 @@ protected:
 
   void CopySuccessor(Node<T, M> *node, Node<T, M> *successor);
 
+  void DestroyRecursive(Node<T, M> *node);
+
   std::int64_t size_{0};
   Node<T, M> *root_{nullptr};
 };

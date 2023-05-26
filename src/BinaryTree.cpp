@@ -9,6 +9,9 @@ template <typename T, typename M> BinaryTree<T, M>::BinaryTree() {
 
 template <typename T, typename M> BinaryTree<T, M>::~BinaryTree() {
   //  qDebug() << "BinaryTree destructor was called";
+  DestroyRecursive(root_);
+  root_ = nullptr;
+  size_ = 0;
 }
 
 template <typename T, typename M>
@@ -333,6 +336,15 @@ bool BinaryTree<T, M>::IsLeftSideOfNode(Node<T, M> *node) const {
   }
 
   return false;
+}
+
+template <typename T, typename M>
+void BinaryTree<T, M>::DestroyRecursive(Node<T, M> *node) {
+  if (node) {
+    DestroyRecursive(node->left_);
+    DestroyRecursive(node->right_);
+    delete node;
+  }
 }
 
 // explicit instantiation

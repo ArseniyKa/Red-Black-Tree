@@ -129,8 +129,13 @@ TEST_F(RemoveRedBlackTreeTest, remove_AllLeavesEmpty_Black_Deletion_RR_Test) {
   checkNode(tree.GetRBNode(rb_root->right_->right_->left_), 7, Color::Black);
   checkNode(tree.GetRBNode(rb_root->right_->right_->right_), 9, Color::Black);
 
+  // check leaves for 9 node
   EXPECT_EQ(rb_root->right_->right_->right_->right_, nullptr);
   EXPECT_EQ(rb_root->right_->right_->right_->left_, nullptr);
+
+  // check leaves for 7 node
+  EXPECT_EQ(rb_root->right_->right_->left_->left_, nullptr);
+  EXPECT_EQ(rb_root->right_->right_->left_->right_, nullptr);
   EXPECT_EQ(tree.size(), 9);
 }
 
