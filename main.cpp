@@ -1,58 +1,42 @@
 #include "BinaryTree.h"
+#include "RedBlackTree.h"
 #include <QCoreApplication>
 #include <QDebug>
-#include <istream>
+#include <iostream>
 #include <stdint.h>
+
+#include <chrono>
 
 int main(int argc, char *argv[]) {
 
-  std::vector<int> container {1,2,3,4,5,6,7};
+  using std::chrono::duration;
+  using std::chrono::duration_cast;
+  using std::chrono::high_resolution_clock;
+  using std::chrono::milliseconds;
 
-  BinaryTree<int, char> tree;
-  tree.insert(20, 'd');
-  tree.insert(30, 'e');
-  tree.insert(7, 'l');
-  tree.insert(6, 'a');
-  tree.insert(5, 'w');
-  tree.insert(4, 's');
-  tree.insert(3, 'z');
-  tree.insert(10, 'f');
-  tree.insert(31, 'v');
-  tree.insert(40, 'p');
-  tree.insert(39, 'e');
-  tree.insert(38, 'x');
-  tree.insert(50, ',');
-  tree.insert(60, '/');
-  tree.insert(49, ';');
+  std::vector<int> container;
+  RedBlackTree<int, int> tree;
 
-  //  qDebug() << "tree size" << tree.size();
-  //  auto ans = tree.find(7);
-  //  qDebug() << ans->value_;
-  tree.remove(7);
-  //  //  tree.remove(6);
-  //  ans = tree.find(3);
-  //  qDebug() << ans->value_;
+  int size = 1e7;
 
-  for (const auto &elem : tree) {
-    qDebug() << elem.first << "  " << elem.second;
+  for (int i = 0; i < size; i++) {
+    tree.insert(i, i); // 39499 ms
+    //    container.push_back(i); // 74.8087 ms
   }
 
-  qDebug() << "=======================================";
-  //  tree.traverse();
-  //  std::map<int, char> mapa;
-  //  mapa.insert({20, 'd'});
-  //  mapa.insert({30, 'e'});
-  //  //  mapa.insert({7, 'l'});
-  //  mapa.insert({6, 'a'});
-  //  mapa.insert({5, 'w'});
-  //  mapa.insert({4, 's'});
-  //  mapa.insert({3, 'z'});
-  //  mapa.insert({10, 'f'});
-  //  mapa.insert({9, 'f'});
+  auto t1 = high_resolution_clock::now();
+  auto value = tree.find(size / 2); // 0.004889ms
+  /*auto result1 =
+      std::find(container.begin(), container.end(), size / 2);*/ // 16.1718 ms
+  auto t2 = high_resolution_clock::now();
 
-  //  for (auto &elem : mapa) {
-  //    qDebug() << elem.first << "   " << elem.second;
-  //  }
+  /* Getting number of milliseconds as a double. */
+  duration<double, std::milli> ms_double = t2 - t1;
+
+  std::cout << ms_double.count() << "ms\n";
+
+  //  std::cout << "value\n";
+  //  2);
 
   return 0;
 }

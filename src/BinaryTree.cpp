@@ -3,26 +3,10 @@
 
 #define GETNAME(var) #var
 
-template <typename T, typename M> BinaryTree<T, M>::BinaryTree() {
-  //  qDebug() << "BinaryTree constructor was called";
-}
-
 template <typename T, typename M> BinaryTree<T, M>::~BinaryTree() {
-  //  qDebug() << "BinaryTree destructor was called";
   DestroyRecursive(root_);
   root_ = nullptr;
   size_ = 0;
-}
-
-template <typename T, typename M>
-BinaryTree<T, M>::BinaryTree(const BinaryTree &other) {
-  qDebug() << "BinaryTree copy constructor was called";
-}
-
-template <typename T, typename M>
-BinaryTree<T, M> &BinaryTree<T, M>::operator=(const BinaryTree &other) {
-  qDebug() << "BinaryTree copy assignment was called";
-  return *this;
 }
 
 template <typename T, typename M>

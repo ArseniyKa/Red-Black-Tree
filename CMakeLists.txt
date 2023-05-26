@@ -31,34 +31,33 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core)
 enable_testing()
 add_subdirectory(submodules/googletest)
 add_subdirectory(tests)
-###################################
+#################   for main function   ##################
 
 add_executable(RBTree
   main.cpp
   src/BinaryTree.cpp
-  include/BinaryTree.h
+  src/RedBlackTree.cpp
+  src/RemovingRBNode.cpp
 )
 
 target_include_directories(RBTree PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
     include
 )
+target_link_libraries(RBTree Qt${QT_VERSION_MAJOR}::Core)
+
+#################   lib for google unit tests   ##################
+
 
 add_library(_bst_tree
    src/BinaryTree.cpp
    src/RedBlackTree.cpp
    src/RemovingRBNode.cpp
-   include/BinaryTree.h
-   include/RedBlackTree.h
 )
 
-target_link_libraries(RBTree Qt${QT_VERSION_MAJOR}::Core)
 target_link_libraries(_bst_tree Qt${QT_VERSION_MAJOR}::Core)
 target_include_directories(_bst_tree PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
     include
 )
 
-
-#install(TARGETS RBTree
-#    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})

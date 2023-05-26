@@ -11,10 +11,11 @@
 
 template <typename T, typename M> class BinaryTree {
 public:
-  BinaryTree();
+  BinaryTree() = default;
   ~BinaryTree();
-  BinaryTree(const BinaryTree &other);
-  BinaryTree &operator=(const BinaryTree &other);
+  ///@note this is wrong, resolve it after
+  BinaryTree(const BinaryTree &other) = default;
+  BinaryTree &operator=(const BinaryTree &other) = default;
 
   virtual void insert(T key, M value);
 
