@@ -20,12 +20,12 @@ int main(int argc, char *argv[]) {
   int size = 1e7;
 
   for (int i = 0; i < size; i++) {
-    tree.insert(i, i); // 39499 ms
-    //    container.push_back(i); // 74.8087 ms
+    tree.insert(i, i); // 39499 ms for 1e7
+    //    container.push_back(i); // 74.8087 ms for 1e7
   }
 
   auto t1 = high_resolution_clock::now();
-  auto value = tree.find(size / 2); // 0.004889ms
+  auto value = tree.find(size / 2); // 0.004889ms for 1e7
   /*auto result1 =
       std::find(container.begin(), container.end(), size / 2);*/ // 16.1718 ms
   auto t2 = high_resolution_clock::now();
