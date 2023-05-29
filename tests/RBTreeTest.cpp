@@ -445,4 +445,57 @@ TEST_F(RedBlackTreeTest,
   EXPECT_EQ(tree.size(), 10);
 }
 
+TEST_F(RedBlackTreeTest, CopyConstructorTest) { // NOLINT
+
+  RedBlackTree<int, int> old_tree;
+
+  for (int i = 0; i < 10; i++) {
+    old_tree.insert(i, i);
+  }
+
+  auto new_tree1 = old_tree;
+  BinaryTree<int, int> new_tree2(old_tree);
+  EXPECT_EQ(new_tree1.size(), old_tree.size());
+  EXPECT_EQ(new_tree2.size(), old_tree.size());
+
+  auto old_itr = old_tree.begin();
+  auto new_itr1 = new_tree1.begin();
+  auto new_itr2 = new_tree2.begin();
+  while (old_itr != old_tree.end() && new_itr1 != new_tree1.end() &&
+         new_itr2 != new_tree2.end()) {
+    auto old_key = old_itr.node()->key_;
+    auto new_key1 = new_itr1.node()->key_;
+    auto new_key2 = new_itr2.node()->key_;
+    EXPECT_EQ(old_key, new_key1);
+    EXPECT_EQ(old_key, new_key2);
+    ++old_itr;
+    ++new_itr1;
+    ++new_itr2;
+  }
+
+  auto *root = new_tree1.root();
+  auto *rb_root = new_tree1.GetRBNode(root);
+
+  // clang-format off
+          //                         3
+          //                1                5
+          //             0    2          4        7
+          //                                   6    8
+          //                                          9
+  // clang-format on
+  checkNode(rb_root, 3, Color::Black);
+  checkNode(new_tree1.GetRBNode(rb_root->left_), 1, Color::Black);
+  checkNode(new_tree1.GetRBNode(rb_root->left_->left_), 0, Color::Black);
+  checkNode(new_tree1.GetRBNode(rb_root->left_->right_), 2, Color::Black);
+  checkNode(new_tree1.GetRBNode(rb_root->right_), 5, Color::Black);
+  checkNode(new_tree1.GetRBNode(rb_root->right_->left_), 4, Color::Black);
+  checkNode(new_tree1.GetRBNode(rb_root->right_->right_), 7, Color::Red);
+  checkNode(new_tree1.GetRBNode(rb_root->right_->right_->left_), 6,
+            Color::Black);
+  checkNode(new_tree1.GetRBNode(rb_root->right_->right_->right_), 8,
+            Color::Black);
+  checkNode(new_tree1.GetRBNode(rb_root->right_->right_->right_->right_), 9,
+            Color::Red);
+}
+
 } // namespace bstree::test

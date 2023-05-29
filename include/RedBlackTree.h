@@ -11,8 +11,11 @@ template <typename T, typename M> struct RBNode : public Node<T, M> {
 
 template <typename T, typename M> class RedBlackTree : public BinaryTree<T, M> {
 public:
-  RedBlackTree();
-  ~RedBlackTree();
+  RedBlackTree() = default;
+  ~RedBlackTree() = default;
+
+  RedBlackTree(const RedBlackTree &other);
+  RedBlackTree &operator=(const RedBlackTree &other);
 
   void LeftRotation(Node<T, M> *node);
   void RightRotation(Node<T, M> *node);
@@ -56,7 +59,7 @@ private:
   Node<T, M> *BlackSiblingCase(Node<T, M> *node, Node<T, M> *sibling);
 
   Node<T, M> *BlackSiblingBlackNephews(RBNode<T, M> *node,
-                                      RBNode<T, M> *sibling);
+                                       RBNode<T, M> *sibling);
 
   Node<T, M> *BlackSiblingRedNephew(RBNode<T, M> *node, RBNode<T, M> *sibling);
 };

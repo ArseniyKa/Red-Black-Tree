@@ -1,12 +1,39 @@
 #include "RedBlackTree.h"
 #include <string>
 
-template <typename T, typename M> RedBlackTree<T, M>::RedBlackTree() {
-  //  qDebug() << "Red Black tree constructor";
+template <typename T, typename M>
+RedBlackTree<T, M>::RedBlackTree(const RedBlackTree &other) {
+  if (this == &other) // tries to copy the object to itself
+  {
+    return;
+  }
+
+  qDebug() << "copy RB constructor";
+
+  auto &non_const_obj = const_cast<RedBlackTree &>(other);
+  auto *obj = this;
+  for (auto elem : non_const_obj) {
+    obj->insert(elem.first, elem.second);
+  }
 }
 
-template <typename T, typename M> RedBlackTree<T, M>::~RedBlackTree() {
-  //  qDebug() << "Red Black tree destructor";
+template <typename T, typename M>
+RedBlackTree<T, M> &RedBlackTree<T, M>::operator=(const RedBlackTree &other) {
+
+  if (this == &other) // tries to copy the object to itself
+  {
+    return *this;
+  }
+
+  qDebug() << "copy asign RB constructor";
+
+  auto &non_const_obj = const_cast<RedBlackTree &>(other);
+  auto *obj = this;
+  for (auto elem : non_const_obj) {
+    obj->insert(elem.first, elem.second);
+  }
+
+  return *this;
 }
 
 template <typename T, typename M>

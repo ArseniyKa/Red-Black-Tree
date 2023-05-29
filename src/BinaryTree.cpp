@@ -10,6 +10,42 @@ template <typename T, typename M> BinaryTree<T, M>::~BinaryTree() {
 }
 
 template <typename T, typename M>
+BinaryTree<T, M>::BinaryTree(const BinaryTree &other) {
+
+  if (this == &other) // tries to copy the object to itself
+  {
+    return;
+  }
+
+  qDebug() << "copy constructor";
+
+  auto &non_const_obj = const_cast<BinaryTree &>(other);
+  auto *obj = this;
+  for (auto elem : non_const_obj) {
+    obj->insert(elem.first, elem.second);
+  }
+}
+
+template <typename T, typename M>
+BinaryTree<T, M> &BinaryTree<T, M>::operator=(const BinaryTree &other) {
+
+  if (this == &other) // tries to copy the object to itself
+  {
+    return *this;
+  }
+
+  qDebug() << "copy asign constructor";
+
+  auto &non_const_obj = const_cast<BinaryTree &>(other);
+  auto *obj = this;
+  for (auto elem : non_const_obj) {
+    obj->insert(elem.first, elem.second);
+  }
+
+  return *this;
+}
+
+template <typename T, typename M>
 void BinaryTree<T, M>::insert(T key, M value) {
   if (root_ == nullptr) {
     CreateNewNode(key, value, root_, nullptr);

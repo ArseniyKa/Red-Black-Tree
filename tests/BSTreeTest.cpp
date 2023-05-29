@@ -249,4 +249,33 @@ TEST_F(BinarySearchTest, BSTreeIteratorTest) { // NOLINT
   }
 }
 
+TEST_F(BinarySearchTest, CopyConstructorTest) { // NOLINT
+
+  BinaryTree<int, int> old_tree;
+
+  for (int i = 0; i < 10; i++) {
+    old_tree.insert(i, i);
+  }
+
+  auto new_tree1 = old_tree;
+  BinaryTree<int, int> new_tree2(old_tree);
+  EXPECT_EQ(new_tree1.size(), old_tree.size());
+  EXPECT_EQ(new_tree2.size(), old_tree.size());
+
+  auto old_itr = old_tree.begin();
+  auto new_itr1 = new_tree1.begin();
+  auto new_itr2 = new_tree2.begin();
+  while (old_itr != old_tree.end() && new_itr1 != new_tree1.end() &&
+         new_itr2 != new_tree2.end()) {
+    auto old_key = old_itr.node()->key_;
+    auto new_key1 = new_itr1.node()->key_;
+    auto new_key2 = new_itr2.node()->key_;
+    EXPECT_EQ(old_key, new_key1);
+    EXPECT_EQ(old_key, new_key2);
+    ++old_itr;
+    ++new_itr1;
+    ++new_itr2;
+  }
+}
+
 } // namespace bstree::test
