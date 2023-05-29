@@ -278,4 +278,39 @@ TEST_F(BinarySearchTest, CopyConstructorTest) { // NOLINT
   }
 }
 
+TEST_F(BinarySearchTest, MoveConstructorTest) { // NOLINT
+
+  BinaryTree<int, int> old_tree;
+
+  for (int i = 0; i < 10; i++) {
+    old_tree.insert(i, i);
+  }
+
+  auto new_tree1 = std::move(old_tree);
+
+  for (int i = 0; i < 10; i++) {
+    old_tree.insert(i, i);
+  }
+  BinaryTree<int, int> new_tree2(std::move(old_tree));
+  EXPECT_EQ(new_tree1.size(), new_tree2.size());
+  EXPECT_EQ(new_tree1.size(), 10);
+  EXPECT_EQ(old_tree.size(), 0);
+
+  try {
+    EXPECT_EQ(old_tree.root(), nullptr);
+  } catch (...) {
+    EXPECT_EQ(true, true);
+  }
+
+  auto new_itr1 = new_tree1.begin();
+  auto new_itr2 = new_tree2.begin();
+  while (new_itr1 != new_tree1.end() && new_itr2 != new_tree2.end()) {
+    auto new_key1 = new_itr1.node()->key_;
+    auto new_key2 = new_itr2.node()->key_;
+    EXPECT_EQ(new_key1, new_key2);
+    ++new_itr1;
+    ++new_itr2;
+  }
+}
+
 } // namespace bstree::test

@@ -17,8 +17,6 @@ BinaryTree<T, M>::BinaryTree(const BinaryTree &other) {
     return;
   }
 
-  qDebug() << "copy constructor";
-
   auto &non_const_obj = const_cast<BinaryTree &>(other);
   auto *obj = this;
   for (auto elem : non_const_obj) {
@@ -34,13 +32,43 @@ BinaryTree<T, M> &BinaryTree<T, M>::operator=(const BinaryTree &other) {
     return *this;
   }
 
-  qDebug() << "copy asign constructor";
-
   auto &non_const_obj = const_cast<BinaryTree &>(other);
   auto *obj = this;
   for (auto elem : non_const_obj) {
     obj->insert(elem.first, elem.second);
   }
+
+  return *this;
+}
+
+template <typename T, typename M>
+BinaryTree<T, M>::BinaryTree(BinaryTree &&other) {
+
+  if (this == &other) // tries to move the object to itself
+  {
+    return;
+  }
+
+  root_ = other.root();
+  size_ = other.size_;
+
+  other.root_ = nullptr;
+  other.size_ = 0;
+}
+
+template <typename T, typename M>
+BinaryTree<T, M> &BinaryTree<T, M>::operator=(BinaryTree &&other) {
+
+  if (this == &other) // tries to move the object to itself
+  {
+    return *this;
+  }
+
+  root_ = other.root();
+  size_ = other.size_;
+
+  other.root_ = nullptr;
+  other.size_ = 0;
 
   return *this;
 }

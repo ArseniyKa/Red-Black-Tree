@@ -15,6 +15,8 @@ public:
   ~BinaryTree();
   BinaryTree(const BinaryTree &other);
   BinaryTree &operator=(const BinaryTree &other);
+  BinaryTree(BinaryTree &&other);
+  BinaryTree &operator=(BinaryTree &&other);
 
   virtual void insert(T key, M value);
 

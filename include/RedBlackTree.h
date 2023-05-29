@@ -17,6 +17,9 @@ public:
   RedBlackTree(const RedBlackTree &other);
   RedBlackTree &operator=(const RedBlackTree &other);
 
+  RedBlackTree(RedBlackTree &&other);
+  RedBlackTree &operator=(RedBlackTree &&other);
+
   void LeftRotation(Node<T, M> *node);
   void RightRotation(Node<T, M> *node);
 

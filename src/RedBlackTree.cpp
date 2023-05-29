@@ -37,6 +37,42 @@ RedBlackTree<T, M> &RedBlackTree<T, M>::operator=(const RedBlackTree &other) {
 }
 
 template <typename T, typename M>
+RedBlackTree<T, M>::RedBlackTree(RedBlackTree &&other) {
+
+  if (this == &other) // tries to move the object to itself
+  {
+    return;
+  }
+
+  qDebug() << "move  constructor";
+
+  this->root_ = other.root();
+  this->size_ = other.size_;
+
+  other.root_ = nullptr;
+  other.size_ = 0;
+}
+
+template <typename T, typename M>
+RedBlackTree<T, M> &RedBlackTree<T, M>::operator=(RedBlackTree &&other) {
+
+  if (this == &other) // tries to move the object to itself
+  {
+    return *this;
+  }
+
+  qDebug() << "move asign constructor";
+
+  this->root_ = other.root();
+  this->size_ = other.size_;
+
+  other.root_ = nullptr;
+  other.size_ = 0;
+
+  return *this;
+}
+
+template <typename T, typename M>
 void RedBlackTree<T, M>::insert(T key, M value) {
   this->BinaryTree<T, M>::insert(key, value); // simple insert a node
   if (this->size_ == 1) {
